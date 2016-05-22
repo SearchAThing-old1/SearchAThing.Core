@@ -60,8 +60,9 @@ namespace SearchAThing.Core
                 }
                 else
                 {
-                    using (var tw = XmlDictionaryWriter.CreateTextWriter(fs))
-                    {
+                    var wrSettings = new XmlWriterSettings() { Indent = true };
+                    using (var tw = XmlWriter.Create(fs, wrSettings))
+                    {                        
                         serializer.WriteObject(tw, obj);
                     }
                 }
