@@ -23,40 +23,45 @@
 */
 #endregion
 
+using System;
 using static System.Math;
 
-namespace SearchAThing.Core
-{
+namespace SearchAThing
+{   
 
-    public class TaggedObject<O, T>
+    namespace Core
     {
 
-        public O Obj { get; set; }
+        public class TaggedObject<O, T>
+        {
 
-        public T Tag { get; set; }
+            public O Obj { get; set; }
+
+            public T Tag { get; set; }
+
+        }
+
+        public class TaggedObject<O, T1, T2>
+        {
+
+            public O Obj { get; set; }
+
+            public T1 Tag1 { get; set; }
+            public T2 Tag2 { get; set; }
+
+        }
+
+        public class TaggedObject<O, T1, T2, T3>
+        {
+
+            public O Obj { get; set; }
+
+            public T1 Tag1 { get; set; }
+            public T2 Tag2 { get; set; }
+            public T3 Tag3 { get; set; }
+
+        }
 
     }
-
-    public class TaggedObject<O, T1, T2>
-    {
-
-        public O Obj { get; set; }
-
-        public T1 Tag1 { get; set; }
-        public T2 Tag2 { get; set; }
-
-    }
-
-    public class TaggedObject<O, T1, T2, T3>
-    {
-
-        public O Obj { get; set; }
-
-        public T1 Tag1 { get; set; }
-        public T2 Tag2 { get; set; }
-        public T3 Tag3 { get; set; }
-
-    }
-
 
 }
