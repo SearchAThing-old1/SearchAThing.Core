@@ -51,8 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CircularEnumerator.cs" />
+    <Compile Include="CircularList.cs" />
     <Compile Include="EventOperation.cs" />
     <Compile Include="IEventOperation.cs" />
+    <Compile Include="Fluent.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Number.cs" />
     <Compile Include="Path.cs" />
