@@ -25,6 +25,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using static System.Math;
 
 namespace SearchAThing.Core
@@ -110,6 +111,22 @@ namespace SearchAThing.Core
             else if (bytes >= m && bytes < g) return $"{Round(((double)bytes) / m, 1)}M";
             else if (bytes >= g && bytes < t) return $"{Round(((double)bytes) / g, 1)}G";
             else return $"{((double)bytes) / t}T";
+        }
+
+        /// <summary>
+        /// Repeat given string for cnt by concatenate itself
+        /// </summary>        
+        public static string Repeat(this string s, int cnt)
+        {
+            var sb = new StringBuilder();
+
+            while (cnt > 0)
+            {
+                sb.Append(s);
+                --cnt;
+            }
+
+            return sb.ToString();
         }
 
     }
