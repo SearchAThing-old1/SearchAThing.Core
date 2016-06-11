@@ -24,15 +24,37 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using static System.Math;
 
-namespace SearchAThing.Core
+namespace SearchAThing
 {
 
     public static partial class Extensions
     {
 
-        public static T Eval<T, O>(this O o, Func<O, T> eval)
+        public static void Foreach<D>(this IEnumerable<D> en, Action<D> act)
+        {
+            foreach (var x in en) act(x);
+        }
+
+        public static void Foreach(this IEnumerable en, Action<object> act)
+        {
+            foreach (var x in en) act(x);
+        }
+
+        public static void Foreach(this IList lst, Action<object> act)
+        {
+            foreach (var x in lst) act(x);
+        }
+
+        public static void Action<O>(this O o, Action<O> act)
+        {
+            act(o);
+        }
+
+        public static T Function<O, T>(this O o, Func<O, T> eval)
         {
             return eval(o);
         }
@@ -40,3 +62,4 @@ namespace SearchAThing.Core
     }
 
 }
+
