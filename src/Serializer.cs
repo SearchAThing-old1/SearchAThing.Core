@@ -30,7 +30,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
-namespace SearchAThing.Core
+namespace SearchAThing
 {
 
     public static partial class Extensions

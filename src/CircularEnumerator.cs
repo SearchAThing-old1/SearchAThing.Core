@@ -30,17 +30,7 @@ using System.Collections.Generic;
 
 namespace SearchAThing
 {
-
-    public static partial class Extensions
-    {
-
-        public static IEnumerable<D> AsCircularEnumerable<D>(this IEnumerable<D> enumerable)
-        {
-            return new CircularEnumerable<D>(enumerable);
-        }
-
-    }
-
+    
     namespace Core
     {
 
@@ -109,6 +99,16 @@ namespace SearchAThing
             {
                 return new CircularEnumerator<D>(enumerable);
             }
+        }
+
+    }
+
+    public static partial class Extensions
+    {
+
+        public static IEnumerable<D> AsCircularEnumerable<D>(this IEnumerable<D> enumerable)
+        {
+            return new CircularEnumerable<D>(enumerable);
         }
 
     }

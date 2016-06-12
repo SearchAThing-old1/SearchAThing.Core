@@ -25,7 +25,7 @@
 
 using static System.Math;
 
-namespace SearchAThing.Core
+namespace SearchAThing
 {
 
     public static partial class Extensions
