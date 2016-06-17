@@ -36,7 +36,45 @@ namespace SearchAThing
     public static partial class Extensions
     {
 
+        /// <summary>
+        /// serialize to string
+        /// </summary>        
+        public static string Serialize<T>(this T obj, bool binary = true, IEnumerable<Type> knownTypes = null)
+        {
+            var res = "";
+
+            using (var ms = new MemoryStream())
+            {
+                obj.Serialize(ms, binary, knownTypes);
+
+                ms.Seek(0, SeekOrigin.Begin);
+
+                using (var sr = new StreamReader(ms))
+                {
+                    res = sr.ReadToEnd();
+                }
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// serialize to file
+        /// </summary>        
         public static void Serialize<T>(this T obj, string dstPathfilename, bool binary = true, IEnumerable<Type> knownTypes = null)
+        {
+            if (File.Exists(dstPathfilename)) File.Delete(dstPathfilename);
+
+            using (var fs = new FileStream(dstPathfilename, FileMode.CreateNew))
+            {
+                obj.Serialize(fs, binary, knownTypes);
+            }
+        }
+
+        /// <summary>
+        /// serialize to stream
+        /// </summary>        
+        public static void Serialize<T>(this T obj, Stream stream, bool binary = true, IEnumerable<Type> knownTypes = null)
         {
             var settings = new DataContractSerializerSettings()
             {
@@ -47,29 +85,69 @@ namespace SearchAThing
 
             var serializer = new DataContractSerializer(typeof(T), settings);
 
-            if (System.IO.File.Exists(dstPathfilename)) System.IO.File.Delete(dstPathfilename);
-
-            using (var fs = new FileStream(dstPathfilename, FileMode.CreateNew))
+            if (binary)
             {
-                if (binary)
+                using (var bw = XmlDictionaryWriter.CreateBinaryWriter(stream))
                 {
-                    using (var bw = XmlDictionaryWriter.CreateBinaryWriter(fs))
-                    {
-                        serializer.WriteObject(bw, obj);
-                    }
+                    serializer.WriteObject(bw, obj);
                 }
-                else
+            }
+            else
+            {
+                var wrSettings = new XmlWriterSettings() { Indent = true };
+                using (var tw = XmlWriter.Create(stream, wrSettings))
                 {
-                    var wrSettings = new XmlWriterSettings() { Indent = true };
-                    using (var tw = XmlWriter.Create(fs, wrSettings))
-                    {                        
-                        serializer.WriteObject(tw, obj);
-                    }
+                    serializer.WriteObject(tw, obj);
                 }
             }
         }
 
-        public static T Deserialize<T>(this string srcPathfilename, bool binary = true, IEnumerable<Type> knownTypes = null)
+        //-------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Deserialize from string
+        /// </summary>        
+        public static T DeserializeString<T>(this string str, bool binary = true, IEnumerable<Type> knownTypes = null)
+        {
+            T res;
+
+            using (var ms = new MemoryStream())
+            {
+                using (var sw = new StreamWriter(ms))
+                {
+                    sw.Write(str);
+                    sw.Flush();
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    
+                    res = ms.Deserialize<T>(binary, knownTypes);
+                }
+            }
+
+            return res;
+        }
+
+
+        /// <summary>
+        /// Deserialize from file
+        /// </summary>        
+        public static T DeserializeFile<T>(this string srcPathfilename, bool binary = true, IEnumerable<Type> knownTypes = null)
+        {
+            T res;
+
+            using (var fs = new FileStream(srcPathfilename, FileMode.Open))
+            {
+                res = fs.Deserialize<T>(binary, knownTypes);
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Deserialize from stream
+        /// </summary>        
+        public static T Deserialize<T>(this Stream stream, bool binary = true, IEnumerable<Type> knownTypes = null)
         {
             var settings = new DataContractSerializerSettings()
             {
@@ -81,21 +159,19 @@ namespace SearchAThing
             var serializer = new DataContractSerializer(typeof(T), settings);
 
             T res;
-            using (var fs = new FileStream(srcPathfilename, FileMode.Open))
+
+            if (binary)
             {
-                if (binary)
+                using (var br = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                 {
-                    using (var br = XmlDictionaryReader.CreateBinaryReader(fs, XmlDictionaryReaderQuotas.Max))
-                    {
-                        res = (T)serializer.ReadObject(br);
-                    }
+                    res = (T)serializer.ReadObject(br);
                 }
-                else
+            }
+            else
+            {
+                using (var tr = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
                 {
-                    using (var tr = XmlDictionaryReader.CreateTextReader(fs, XmlDictionaryReaderQuotas.Max))
-                    {
-                        res = (T)serializer.ReadObject(tr);
-                    }
+                    res = (T)serializer.ReadObject(tr);
                 }
             }
 
