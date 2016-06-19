@@ -88,13 +88,13 @@ namespace SearchAThing
 
                     case ProcessTaskPathMode.SeachInEnvironment:
                         {
-                            _pathfilename = Path.GetFileName(_pathfilename);
+                            _pathfilename = System.IO.Path.GetFileName(_pathfilename);
 
                             // check in env var if given
                             if (envPath != null)
                             {
                                 var path = Environment.GetEnvironmentVariable(envPath);
-                                if (path != null) Pathfilename = Path.Combine(path, _pathfilename);
+                                if (path != null) Pathfilename = System.IO.Path.Combine(path, _pathfilename);
                             }
 
                             if (!File.Exists(Pathfilename))
