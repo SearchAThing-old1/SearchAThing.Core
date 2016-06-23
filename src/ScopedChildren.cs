@@ -32,6 +32,10 @@ namespace SearchAThing
     namespace Core
     {
 
+        /// <summary>
+        /// Pattern to allow access the root document from the nested child objects.
+        /// Example here : https://github.com/devel0/SearchAThing.Patterns/blob/master/src/MongoScopedChildren/Program.cs
+        /// </summary>
         public static class ScopedChildrenManager
         {
 
