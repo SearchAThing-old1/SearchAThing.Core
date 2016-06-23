@@ -58,6 +58,8 @@
     <Compile Include="Fluent.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Number.cs" />
+    <Compile Include="IScopedChild.cs" />
+    <Compile Include="ScopedChildren.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="ProcessTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
