@@ -27,9 +27,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static System.Math;
+using SearchAThing;
 
 namespace SearchAThing
-{
+{    
 
     public static partial class Extensions
     {
@@ -99,17 +100,19 @@ namespace SearchAThing
         /// <summary>
         /// Returns a human readable bytes length. (eg. 1000, 1K, 1M, 1G, 1T)
         /// </summary>        
-        public static string HumanReadable(this long bytes, bool omitByteSuffix = true)
+        public static string HumanReadable(this long bytes, bool omitByteSuffix = true, long multiple = 1L)
         {
             var k = 1024L;
             var m = k * 1024;
             var g = m * 1024;
             var t = g * 1024;
 
-            if (bytes < k) { if (omitByteSuffix) return $"{bytes}"; else return $"{bytes}b"; }
-            else if (bytes >= k && bytes < m) return $"{Round(((double)bytes) / k, 1)}K";
-            else if (bytes >= m && bytes < g) return $"{Round(((double)bytes) / m, 1)}M";
-            else if (bytes >= g && bytes < t) return $"{Round(((double)bytes) / g, 1)}G";
+            bytes = (long)((double)bytes).MRound(multiple);
+
+            if (bytes < k) { if (omitByteSuffix) return $"{bytes}"; else return $"{bytes} b"; }
+            else if (bytes >= k && bytes < m) return $"{((double)bytes) / k} Kb";
+            else if (bytes >= m && bytes < g) return $"{((double)bytes) / m} Mb";
+            else if (bytes >= g && bytes < t) return $"{((double)bytes) / g} Gb";
             else return $"{((double)bytes) / t}T";
         }
 

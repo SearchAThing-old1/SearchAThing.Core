@@ -39,6 +39,16 @@ namespace SearchAThing
             return Abs(x - y) < Min(x, y) * precision;
         }
 
+        /// <summary>
+        /// Round the given value using the multiple basis
+        /// </summary>        
+        public static double MRound(this double value, double multiple)
+        {
+            var p = Round(value / multiple);
+
+            return Truncate(p) * multiple;
+        }
+
     }
 
 }
