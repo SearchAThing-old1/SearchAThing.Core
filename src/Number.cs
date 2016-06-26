@@ -23,6 +23,8 @@
 */
 #endregion
 
+using System.Collections.Generic;
+using System.Globalization;
 using static System.Math;
 
 namespace SearchAThing
@@ -47,6 +49,61 @@ namespace SearchAThing
             var p = Round(value / multiple);
 
             return Truncate(p) * multiple;
+        }
+
+        /// <summary>
+        /// convert given angle(rad) to degree
+        /// </summary>        
+        public static double ToDeg(this double angleRad)
+        {
+            return angleRad / PI * 180.0;
+        }
+
+        /// <summary>
+        /// convert given angle(grad) to radians
+        /// </summary>        
+        public static double ToRad(this double angleGrad)
+        {
+            return angleGrad / 180.0 * PI;
+        }
+
+        /// <summary>
+        /// Return an invariant string representation rounded to given dec.        
+        public static string Stringify(this double x, int dec)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}", Round(x, dec));
+        }
+
+        /// <summary>
+        /// Magnitude of given number. (eg. 190 -> 1.9e2 -> 2)
+        /// (eg. 0.0034 -> 3.4e-3 -> -3)
+        /// </summary>        
+        public static int Magnitude(this double value)
+        {
+            var a = Abs(value);
+
+            if (a < double.Epsilon) return 0;
+
+            return (int)Floor(Log10(a));
+        }
+
+        public static double Mean(this IEnumerable<double> set)
+        {
+            var v = 0.0;
+            int cnt = 0;
+            foreach (var x in set) { v += x; ++cnt; }
+            return v / cnt;
+        }
+
+        public static string ToString(this double d, int significantDigits)
+        {
+            if (d >= 0)
+                return string.Format(CultureInfo.InvariantCulture, "{0:0.##}", d);
+            else
+            {
+                var decfmt = "#".Repeat(-d.Magnitude());
+                return string.Format(CultureInfo.InvariantCulture, "{0:0." + decfmt + "}", d);
+            }
         }
 
     }
