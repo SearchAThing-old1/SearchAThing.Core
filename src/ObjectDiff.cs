@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static System.Math;
 using System.Linq;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace SearchAThing
 {
@@ -109,6 +110,7 @@ namespace SearchAThing
             }
 
             static Type tICollection = typeof(ICollection);
+            static Type tBsonIgnoreAttribute = typeof(BsonIgnoreAttribute);
 
             /// <summary>
             /// compare two objects reporting differences for:
@@ -124,12 +126,22 @@ namespace SearchAThing
                 var props = type.GetProperties();
 
                 foreach (var prop in props)
-                {
+                {                    
+                    if (prop.CustomAttributes.Any(r => r.AttributeType == tBsonIgnoreAttribute)) continue;
+
                     // exclude properties without public setter
                     if (prop.GetSetMethod(false) == null) continue;
 
                     var v1 = prop.GetValue(o1);
                     var v2 = prop.GetValue(o2);
+
+                    if (v1 == null || v2 == null)
+                    {
+                        if (v1 == null && v2 == null) continue;
+
+                        yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
+                        continue;
+                    }
 
                     if (prop.PropertyType.GetInterface(tICollection.Name) == tICollection)
                     {
