@@ -39,6 +39,11 @@ namespace SearchAThing
             return new ObservableCollection<T>(set);
         }
 
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> set)
+        {
+            return new HashSet<T>(set);
+        }
+
     }
 
 }
