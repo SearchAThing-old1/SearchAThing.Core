@@ -97,13 +97,8 @@ namespace SearchAThing
 
         public static string ToString(this double d, int significantDigits)
         {
-            if (d >= 0)
-                return string.Format(CultureInfo.InvariantCulture, "{0:0.##}", d);
-            else
-            {
-                var decfmt = "#".Repeat(-d.Magnitude());
-                return string.Format(CultureInfo.InvariantCulture, "{0:0." + decfmt + "}", d);
-            }
+            var decfmt = "#".Repeat(significantDigits);
+            return string.Format(CultureInfo.InvariantCulture, "{0:0." + decfmt + "}", d);
         }
 
     }
