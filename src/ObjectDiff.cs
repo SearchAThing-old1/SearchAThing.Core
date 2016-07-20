@@ -82,6 +82,11 @@ namespace SearchAThing
                 CollectionElementsToAdd = collectionElementsToAdd;
                 CollectionElementsToRemove = collectionElementsToRemove;
             }
+
+            public override string ToString()
+            {
+                return $"PropName={PropertyFullPath} CollAdd={CollectionElementsToAdd?.Count} CollRemove={CollectionElementsToRemove?.Count}";
+            }
         }
 
         public static partial class Extensions
@@ -126,7 +131,7 @@ namespace SearchAThing
                 var props = type.GetProperties();
 
                 foreach (var prop in props)
-                {                    
+                {
                     if (prop.CustomAttributes.Any(r => r.AttributeType == tBsonIgnoreAttribute)) continue;
 
                     // exclude properties without public setter
