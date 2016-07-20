@@ -160,46 +160,29 @@ namespace SearchAThing
                         // either set non-null, proceed to analysis
                         else if (coll1 != null && coll2 != null)
                         {
+                            // elements of coll1 paired with coll2
+                            var hsColl1 = new HashSet<object>();
+
+                            // elements of coll2 paired with coll1
                             var hsColl2 = new HashSet<object>();
-                            foreach (var x in coll2) hsColl2.Add(x);
 
-                            var toRemove = new List<object>();
-                            var toAdd = new List<object>();
-
-                            var en1 = coll1.GetEnumerator();
-                            var en2 = coll2.GetEnumerator();
-                            while (en1.MoveNext())
+                            foreach (var x1 in coll1)
                             {
-                                if (!en2.MoveNext()) // 2th coll finished, then remove remainings from the first
+                                foreach (var x2 in coll2)
                                 {
-                                    do
-                                    {
-                                        toRemove.Add(en1.Current);
-                                    }
-                                    while (en1.MoveNext());
-                                }
-                                else
-                                {
-                                    var item1 = en1.Current;
-                                    var item1Type = item1.GetType();
-                                    var item2 = en2.Current;
-                                    var item2Type = item2.GetType();
-                                    var differs = false;
-                                    if (item1Type != item2Type)
-                                        differs = true;
-                                    else
-                                        differs = Compare(item1, item2, prefix, item1.GetType(), execDirectComparision, o1Root, o2Root)
-                                            .Any();
+                                    if (hsColl2.Contains(x2)) continue; // already paired element
 
-                                    if (differs)
+                                    // if x1 equals x2
+                                    if (!Compare(x1, x2, prefix, x1.GetType(), execDirectComparision, o1Root, o2Root).Any())
                                     {
-                                        toRemove.Add(item1);
-                                        toAdd.Add(item2);
+                                        hsColl1.Add(x1);
+                                        hsColl2.Add(x2);
                                     }
                                 }
                             }
 
-                            while (en2.MoveNext()) toAdd.Add(en2.Current);
+                            var toAdd = coll2.Cast<object>().Where(r => !hsColl2.Contains(r)).ToList();
+                            var toRemove = coll1.Cast<object>().Where(r => !hsColl1.Contains(r)).ToList();
 
                             if (toAdd.Count > 0 || toRemove.Count > 0)
                                 yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), null, null, null, null,
