@@ -86,6 +86,7 @@
     <Compile Include="CircularList.cs" />
     <Compile Include="Collections.cs" />
     <Compile Include="EventOperation.cs" />
+    <Compile Include="Exception.cs" />
     <Compile Include="IEventOperation.cs" />
     <Compile Include="Fluent.cs" />
     <Compile Include="LinqExpr.cs" />
