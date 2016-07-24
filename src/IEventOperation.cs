@@ -42,7 +42,9 @@ namespace SearchAThing.Core
         /// <summary>
         /// When listener attach its handler it will be notified automatically for the past events.
         /// </summary>
-        RemindPastEvents
+        RemindPastEvents,
+
+        Stopped
     };
 
     /// <summary>
