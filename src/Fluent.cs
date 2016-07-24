@@ -39,15 +39,17 @@ namespace SearchAThing
             foreach (var x in en) act(x);
         }
 
-        public static void Foreach(this IEnumerable en, Action<object> act)
+        /*public static void Foreach(this IEnumerable en, Action<object> act)
         {
             foreach (var x in en) act(x);
-        }
+        }*/
 
+            /*
         public static void Foreach(this IList lst, Action<object> act)
         {
             foreach (var x in lst) act(x);
         }
+        */
 
         public static void Action<O>(this O o, Action<O> act)
         {
