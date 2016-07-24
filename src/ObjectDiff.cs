@@ -166,14 +166,28 @@ namespace SearchAThing
                             // elements of coll2 paired with coll1
                             var hsColl2 = new HashSet<object>();
 
+                            Type collType = null;
+
                             foreach (var x1 in coll1)
                             {
                                 foreach (var x2 in coll2)
                                 {
                                     if (hsColl2.Contains(x2)) continue; // already paired element
 
+                                    if (collType == null) collType = x1.GetType();
+
+                                    if (collType.IsPrimitive || collType.IsValueType ||
+                                        PredefinedAdditionalDirectComparision.Contains(collType) ||
+                                        (execDirectComparision?.Invoke(collType)).GetValueOrDefault())
+                                    {
+                                        if (Equals(x1, x2))
+                                        {
+                                            hsColl1.Add(x1);
+                                            hsColl2.Add(x2);
+                                        }
+                                    }
                                     // if x1 equals x2
-                                    if (!Compare(x1, x2, prefix, x1.GetType(), execDirectComparision, o1Root, o2Root).Any())
+                                    else if (!Compare(x1, x2, prefix, x1.GetType(), execDirectComparision, o1Root, o2Root).Any())
                                     {
                                         hsColl1.Add(x1);
                                         hsColl2.Add(x2);
