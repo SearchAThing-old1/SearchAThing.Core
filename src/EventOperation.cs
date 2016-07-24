@@ -76,8 +76,16 @@ namespace SearchAThing.Core
             firedEvents = new List<Tuple<object, T>>();
         }
 
+        public void Stop()
+        {
+            firedEvents.Clear();
+            behavior = EventOperationBehaviorTypes.Stopped;
+        }
+
         public void Fire(object sender = null, T args = null)
         {
+            if (behavior == EventOperationBehaviorTypes.Stopped) return;
+
             if (behavior == EventOperationBehaviorTypes.RemindPastEvents)
                 firedEvents.Add(new Tuple<object, T>(sender, args));
 
