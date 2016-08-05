@@ -87,6 +87,14 @@ namespace SearchAThing
             return (int)Floor(Log10(a));
         }
 
+        /// <summary>
+        /// Invariant culture double parse
+        /// </summary>        
+        public static double InvDoubleParse(this string str)
+        {
+            return double.Parse(str, CultureInfo.InvariantCulture);
+        }
+
         public static double Mean(this IEnumerable<double> set)
         {
             var v = 0.0;
