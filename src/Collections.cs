@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using static System.Math;
+using System.Linq;
 
 namespace SearchAThing
 {
@@ -37,6 +38,14 @@ namespace SearchAThing
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> set)
         {
             return new ObservableCollection<T>(set);
+        }
+
+        /// <summary>
+        /// overloaded method that allow you to process something while populate obc
+        /// </summary>        
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> set, Func<T, T> doSomeJob)
+        {
+            return new ObservableCollection<T>(set.Select(x => doSomeJob(x)));
         }
 
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> set)
