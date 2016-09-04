@@ -68,6 +68,13 @@ namespace SearchAThing
 
         }
 
+        public class ObjectContainer<T>
+        {
+
+            public T Obj { get; set; }
+
+        }
+
     }
 
     public static partial class Extensions
