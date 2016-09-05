@@ -91,6 +91,8 @@
     <Compile Include="Fluent.cs" />
     <Compile Include="LinqExpr.cs" />
     <Compile Include="ObjectDiff.cs" />
+    <Compile Include="Dynamic.cs" />
+    <Compile Include="Postgresql.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Number.cs" />
     <Compile Include="IScopedChild.cs" />
