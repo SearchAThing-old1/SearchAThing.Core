@@ -25,6 +25,8 @@
 
 using SearchAThing.Core;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using static System.Math;
 
 namespace SearchAThing
@@ -71,6 +73,22 @@ namespace SearchAThing
             if (value == null) return valueIfNull;
 
             return (int)value;
+        }
+
+        /// <summary>
+        /// sweep dynamic array enumerating it
+        /// </summary>        
+        public static IEnumerable<T> Enum<T>(dynamic arr)
+        {
+            foreach (var x in arr) yield return x;
+        }
+
+        /// <summary>
+        /// sweep dynamic array enumerating it
+        /// </summary>        
+        public static List<T> ToList<T>(dynamic arr)
+        {
+            return ((IEnumerable<T>)Enum<T>(arr)).ToList();
         }
 
     }
