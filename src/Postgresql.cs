@@ -153,6 +153,28 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// retrieve psql representation of double
+        /// (number without quotes)        
+        /// </summary>        
+        public static string ToPsql(this double value)
+        {
+            return value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// retrieve psql representation of double
+        /// (number without quotes)
+        /// of "null" string if given argument is null
+        /// </summary>        
+        public static string ToPsql(this double? value)
+        {
+            if (value.HasValue)
+                return value.Value.ToString(CultureInfo.InvariantCulture);
+            else
+                return "null";
+        }
+
+        /// <summary>
         /// retrieve psql representation of double array
         /// '{val1,val2,...,valn}'
         /// list enquoted, using invariant culture
