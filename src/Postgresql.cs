@@ -334,6 +334,39 @@ namespace SearchAThing
             }
         }
 
+        /// <summary>
+        /// creates an update table (fields) with values (val_objects) with optional whereClauses
+        /// it returns nr. of affected rows
+        /// </summary>       
+        public static long UPDATE(this NpgsqlCommand cmd,
+            string table,
+            string[] columnNames,
+            object[] columnValues,
+            string whereClause = null)
+        {
+            var sb = new StringBuilder();
+
+            sb.Append($"update {table} set ( ");
+            for (int i = 0; i < columnNames.Length; ++i)
+            {
+                if (i > 0) sb.Append(", ");
+                sb.Append(columnNames[i]);
+            }
+            sb.Append(" ) = ( ");
+            for (int i = 0; i < columnValues.Length; ++i)
+            {
+                if (i > 0) sb.Append(", ");
+                sb.Append(columnValues[i]);
+            }
+            sb.Append(" )");
+
+            if (whereClause != null) sb.Append($" where {whereClause}");
+
+            cmd.CommandText = sb.ToString();
+
+            return (int)cmd.ExecuteNonQuery();
+        }
+
     }
 
     /// <summary>
