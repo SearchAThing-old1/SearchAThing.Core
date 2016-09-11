@@ -66,6 +66,16 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// safe retrieve dynamic long type
+        /// </summary>        
+        public static long GetLong(dynamic value, long valueIfNull = 0L)
+        {
+            if (value == null) return valueIfNull;
+
+            return (long)value;
+        }
+
+        /// <summary>
         /// safe retrieve dynamic int type
         /// </summary>        
         public static int GetInt(dynamic value, int valueIfNull = 0)
