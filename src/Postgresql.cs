@@ -180,7 +180,7 @@ namespace SearchAThing
         /// list enquoted, using invariant culture
         /// return "null" string if entire array is a null
         /// </summary>        
-        public static string ToPsql(this double[] ary)
+        public static string ToPsql(this IEnumerable<double> ary)
         {
             if (ary == null)
                 return "null";
@@ -190,11 +190,17 @@ namespace SearchAThing
 
                 sb.Append("'{");
 
-                for (int i = 0; i < ary.Length; ++i)
-                {
-                    if (i > 0) sb.Append(',');
+                var en = ary.GetEnumerator();
+                var first = true;
 
-                    sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}", ary[i]));
+                while (en.MoveNext())
+                {
+                    if (!first)
+                        sb.Append(',');
+                    else
+                        first = false;
+
+                    sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}", en.Current));
                 }
 
                 sb.Append("}'");
@@ -208,7 +214,7 @@ namespace SearchAThing
         /// '{val1,val2,null,...,valn}'
         /// list enquoted, using invariant culture and evaluating null to "null" strings
         /// </summary>        
-        public static string ToPsql(this double?[] ary)
+        public static string ToPsql(this IEnumerable<double?> ary)
         {
             if (ary == null)
                 return "null";
@@ -218,14 +224,22 @@ namespace SearchAThing
 
                 sb.Append("'{");
 
-                for (int i = 0; i < ary.Length; ++i)
-                {
-                    if (i > 0) sb.Append(',');
+                var en = ary.GetEnumerator();
+                var first = true;
 
-                    if (ary[i] == null)
+                while (en.MoveNext())
+                {
+                    if (!first)
+                        sb.Append(',');
+                    else
+                        first = false;
+
+                    var cur = en.Current;
+
+                    if (cur == null)
                         sb.Append("null");
                     else
-                        sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}", ary[i].Value));
+                        sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}", cur.Value));
                 }
 
                 sb.Append("}'");
@@ -291,10 +305,9 @@ namespace SearchAThing
         }
 
         /// <summary>
-        /// creates an insert into table (fields) values (val_objects) [returning idfield]
-        /// it executes a Scalar query and returns int>0 if returning_id is given, 0 otherwise executin a NonQuery
-        /// </summary>       
-        public static int INSERT(this NpgsqlCommand cmd,
+        /// creates an insert into table (fields) values (val_objects) [returning idfield]        
+        /// </summary>        
+        public static string INSERT_QUERY(this NpgsqlCommand cmd,
             string intoTable,
             string[] columnNames,
             object[] columnValues,
@@ -316,18 +329,31 @@ namespace SearchAThing
             }
             sb.Append(" )");
 
+            if (!string.IsNullOrEmpty(returning_id)) sb.AppendLine($" returning {returning_id}");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// creates an insert into table (fields) values (val_objects) [returning idfield]
+        /// it executes a Scalar query and returns int>0 if returning_id is given, 0 otherwise executin a NonQuery        
+        /// </summary>       
+        public static int INSERT(this NpgsqlCommand cmd,
+            string intoTable,
+            string[] columnNames,
+            object[] columnValues,
+            string returning_id = "id")
+        {
+            var query = cmd.INSERT_QUERY(intoTable, columnNames, columnValues, returning_id);
+
+            cmd.CommandText = query;
+
             if (!string.IsNullOrEmpty(returning_id))
             {
-                sb.Append($" returning {returning_id}");
-
-                cmd.CommandText = sb.ToString();
-
                 return (int)cmd.ExecuteScalar();
             }
             else
             {
-                cmd.CommandText = sb.ToString();
-
                 cmd.ExecuteNonQuery();
 
                 return 0;
