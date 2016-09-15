@@ -127,7 +127,7 @@ namespace SearchAThing
             else
                 return $"'{str.Replace("'", "''")}'";
         }
-
+       
         /// <summary>
         /// retrieve psql representation of datetime
         /// 'YYYY-MM-DD hh:mm:ss.millis'
@@ -172,7 +172,7 @@ namespace SearchAThing
                 return value.Value.ToString(CultureInfo.InvariantCulture);
             else
                 return "null";
-        }
+        }        
 
         /// <summary>
         /// retrieve psql representation of double array
@@ -263,12 +263,14 @@ namespace SearchAThing
         public static NpgsqlReaderEnumerable SELECT(this NpgsqlCommand cmd,
             string[] fields,
             string fromTable,
-            string whereClause = null)
+            string whereClause = null,
+            string additional_sql = null)
         {
             var sb = new StringBuilder();
 
             sb.Append($"select {string.Join(",", fields)} from {fromTable}");
             if (whereClause != null) sb.Append($" where {whereClause}");
+            if (additional_sql != null) sb.Append(" " + additional_sql);
 
             cmd.CommandText = sb.ToString();
 
