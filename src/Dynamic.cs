@@ -101,6 +101,14 @@ namespace SearchAThing
             return ((IEnumerable<T>)Enum<T>(arr)).ToList();
         }
 
+        /// <summary>
+        /// sweep dynamic array enumerating it and retrieving an hashset
+        /// </summary>        
+        public static HashSet<T> ToHashSet<T>(dynamic arg)
+        {
+            return new HashSet<T>(ToList<T>(arg));
+        }
+
     }
 
 }
