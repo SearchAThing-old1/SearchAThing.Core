@@ -67,8 +67,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=2.2.4.26, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(SolutionDir)\packages\MongoDB.Bson.2.2.4\lib\net45\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.3.0.149, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\swstmp\ti-grout-flag\src\packages\MongoDB.Bson.2.3.0-rc1\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\swsdev\cg-tools\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Npgsql, Version=3.1.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
@@ -96,6 +100,7 @@
     <Compile Include="LinqExpr.cs" />
     <Compile Include="ObjectDiff.cs" />
     <Compile Include="Dynamic.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="Postgresql.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Number.cs" />
