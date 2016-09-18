@@ -53,6 +53,15 @@ namespace SearchAThing
             return new HashSet<T>(set);
         }
 
+        /// <summary>
+        /// move next and retrieve current from the given enumerator
+        /// </summary>        
+        public static T Next<T>(this IEnumerator<T> en)
+        {
+            en.MoveNext();
+            return en.Current;
+        }
+
     }
 
 }

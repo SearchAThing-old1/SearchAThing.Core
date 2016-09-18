@@ -111,6 +111,11 @@ namespace SearchAThing
             return new CircularEnumerable<D>(enumerable);
         }
 
+        public static IEnumerator<D> AsCircularEnumerator<D>(this IEnumerable<D> enumerable)
+        {
+            return enumerable.AsCircularEnumerable().GetEnumerator();
+        }        
+
     }
 
 }
