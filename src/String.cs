@@ -28,9 +28,11 @@ using System.Linq;
 using System.Text;
 using static System.Math;
 using SearchAThing;
+using System;
+using System.Text.RegularExpressions;
 
 namespace SearchAThing
-{    
+{
 
     public static partial class Extensions
     {
@@ -130,6 +132,32 @@ namespace SearchAThing
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// return true if given string matches the given pattern
+        /// the asterisk '*' character replace any group of chars
+        /// the question '?' character replace any single character
+        /// </summary>                
+        public static bool WildcardMatch(this string str, string pattern, bool caseSentitive = true)
+        {
+            var regexStr = $"^{Regex.Escape(pattern).Replace("\\*", ".*").Replace('?', '.')}$";
+
+            Regex regex = null;
+            if (caseSentitive)
+                regex = new Regex(regexStr);
+            else
+                regex = new Regex(regexStr, RegexOptions.IgnoreCase);
+
+            return regex.IsMatch(str);
+        }
+
+        /// <summary>
+        /// split string with given separator string
+        /// </summary>        
+        public static string[] Split(this string str, string sepStr)
+        {
+            return str.Split(sepStr.ToArray(), StringSplitOptions.None); 
         }
 
     }
