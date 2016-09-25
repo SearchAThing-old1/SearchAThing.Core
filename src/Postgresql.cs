@@ -127,7 +127,7 @@ namespace SearchAThing
             else
                 return $"'{str.Replace("'", "''")}'";
         }
-       
+
         /// <summary>
         /// retrieve psql representation of datetime
         /// 'YYYY-MM-DD hh:mm:ss.millis'
@@ -172,7 +172,7 @@ namespace SearchAThing
                 return value.Value.ToString(CultureInfo.InvariantCulture);
             else
                 return "null";
-        }        
+        }
 
         /// <summary>
         /// retrieve psql representation of double array
@@ -364,9 +364,9 @@ namespace SearchAThing
 
         /// <summary>
         /// creates an update table (fields) with values (val_objects) with optional whereClauses
-        /// it returns nr. of affected rows
+        /// it returns query string for use with MultiQuery
         /// </summary>       
-        public static long UPDATE(this NpgsqlCommand cmd,
+        public static string UPDATE_QUERY(this NpgsqlCommand cmd,
             string table,
             string[] columnNames,
             object[] columnValues,
@@ -390,7 +390,22 @@ namespace SearchAThing
 
             if (whereClause != null) sb.Append($" where {whereClause}");
 
-            cmd.CommandText = sb.ToString();
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// creates an update table (fields) with values (val_objects) with optional whereClauses
+        /// it returns nr. of affected rows
+        /// </summary>  
+        public static int UPDATE(this NpgsqlCommand cmd,
+            string table,
+            string[] columnNames,
+            object[] columnValues,
+            string whereClause = null)
+        {
+            var query = cmd.UPDATE_QUERY(table, columnNames, columnValues, whereClause);
+
+            cmd.CommandText = query;
 
             return (int)cmd.ExecuteNonQuery();
         }

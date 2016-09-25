@@ -35,6 +35,11 @@ namespace SearchAThing
     public static partial class Dynamic
     {
 
+        public static bool ContainsField(dynamic value, string field)
+        {
+            return ((IDictionary<string, object>)value).ContainsKey(field);
+        }
+
         /// <summary>
         /// safe retrieve dynamic string type
         /// </summary>        
