@@ -90,12 +90,20 @@ namespace SearchAThing
             return (int)value;
         }
 
+        static Type JValueType = typeof(Newtonsoft.Json.Linq.JValue);
+
         /// <summary>
         /// sweep dynamic array enumerating it
         /// </summary>        
         public static IEnumerable<T> Enum<T>(dynamic arr)
         {
-            foreach (var x in arr) yield return x;
+            foreach (var x in arr)
+            {
+                if (x.GetType() == JValueType)
+                    yield return x.Value;
+                else
+                    yield return x;
+            }
         }
 
         /// <summary>
@@ -104,6 +112,14 @@ namespace SearchAThing
         public static List<T> ToList<T>(dynamic arr)
         {
             return ((IEnumerable<T>)Enum<T>(arr)).ToList();
+        }
+
+        /// <summary>
+        /// sweep dynamic array
+        /// </summary>        
+        public static T[] ToArray<T>(dynamic arr)
+        {
+            return ((IEnumerable<T>)Enum<T>(arr)).ToArray();
         }
 
         /// <summary>
