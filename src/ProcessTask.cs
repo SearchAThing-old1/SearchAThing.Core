@@ -137,10 +137,14 @@ namespace SearchAThing
                 process.StandardInput.Write(str);
                 if (flush) process.StandardInput.Flush();
             }
-
+            
             bool startedOutputSampling = false;
-            public async Task<string> ReadOutput()
+            public async Task<string> ReadOutput(TimeSpan? timeout = null)
             {
+                CancellationToken cancellationToken = CancellationToken.None;
+                if (timeout.HasValue)
+                    cancellationToken = new CancellationTokenSource(timeout.Value).Token;
+
                 var q = await TaskExt.FromEvent<DataReceivedEventArgs>(
                     handler => process.OutputDataReceived += new DataReceivedEventHandler(handler),
                     () =>
@@ -151,8 +155,8 @@ namespace SearchAThing
                             process.BeginOutputReadLine();
                         }
                     },
-                    handler => process.OutputDataReceived -= new DataReceivedEventHandler(handler),
-                    CancellationToken.None);
+                    handler => process.OutputDataReceived -= new DataReceivedEventHandler(handler),                    
+                    cancellationToken);
 
                 return q.Data;
             }
