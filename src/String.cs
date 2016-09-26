@@ -30,6 +30,7 @@ using static System.Math;
 using SearchAThing;
 using System;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace SearchAThing
 {
@@ -158,6 +159,14 @@ namespace SearchAThing
         public static string[] Split(this string str, string sepStr)
         {
             return str.Split(sepStr.ToArray(), StringSplitOptions.None); 
+        }
+
+        /// <summary>
+        /// return dynamic array from given [[xx],[yy],...] json array
+        /// </summary>        
+        public static dynamic GetJsonArray(this string jsonDumps)
+        {
+            return ((dynamic)JObject.Parse($"{{a:{jsonDumps}}}")).a;
         }
 
     }
