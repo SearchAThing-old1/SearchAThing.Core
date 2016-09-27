@@ -62,6 +62,43 @@ namespace SearchAThing
             return en.Current;
         }
 
+        /// <summary>
+        /// create a rotated list where lst[N-1] satisfy the given lastRule, and lst[0] satisfy firstRule        
+        /// </summary>        
+        public static IEnumerable<T> RotateListUntil<T>(this IList<T> lst, Func<T, bool> lastRule, Func<T, bool> firstRule)
+        {
+            var idxFirstRule = 0;
+            for (int i = 0; i < lst.Count; ++i)
+            {
+                if (i == 0)
+                {
+                    if (firstRule(lst[i]) && lastRule(lst[lst.Count - 1]))
+                    {
+                        idxFirstRule = i;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (lastRule(lst[i - 1]) && firstRule(lst[i]))
+                    {
+                        idxFirstRule = i;
+                        break;
+                    }
+                }
+            }
+
+            var j = idxFirstRule;
+            var cnt = lst.Count;
+            while (cnt > 0)
+            {
+                yield return lst[j];
+                ++j; if (j == lst.Count) j = 0;
+
+                --cnt;
+            }
+        }
+
     }
 
 }
