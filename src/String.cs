@@ -31,6 +31,7 @@ using SearchAThing;
 using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace SearchAThing
 {
@@ -158,7 +159,7 @@ namespace SearchAThing
         /// </summary>        
         public static string[] Split(this string str, string sepStr)
         {
-            return str.Split(sepStr.ToArray(), StringSplitOptions.None); 
+            return str.Split(sepStr.ToArray(), StringSplitOptions.None);
         }
 
         /// <summary>
@@ -167,6 +168,32 @@ namespace SearchAThing
         public static dynamic GetJsonArray(this string jsonDumps)
         {
             return ((dynamic)JObject.Parse($"{{a:{jsonDumps}}}")).a;
+        }
+
+        /// <summary>
+        /// parse given array of doubles ( invariant ) comma separated
+        /// </summary>        
+        public static double[] Import(this string ary)
+        {
+            if (string.IsNullOrEmpty(ary.Trim())) return new double[] { };
+
+            return ary.Split(',').Select(w => double.Parse(w, CultureInfo.InvariantCulture)).ToArray();
+        }
+
+        /// <summary>
+        /// export to a string ( invariant ) comma separated
+        /// </summary>        
+        public static string Export(this double[] ary)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var x in ary)
+            {
+                if (sb.Length > 0) sb.Append(",");
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}", x));
+            }
+
+            return sb.ToString();
         }
 
     }
