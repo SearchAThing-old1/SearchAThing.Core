@@ -257,6 +257,16 @@ namespace SearchAThing
             return obj == DBNull.Value;
         }
 
+        /// <summary>
+        /// executes given free select query
+        /// </summary>        
+        public static NpgsqlReaderEnumerable SELECT(this NpgsqlCommand cmd, string free_select_query)
+        {
+            cmd.CommandText = free_select_query;
+
+            return new NpgsqlReaderEnumerable(cmd.ExecuteReader());
+        }
+
         /// <summary>        
         /// executes a select of given fields from table with whereClauses
         /// </summary>        
