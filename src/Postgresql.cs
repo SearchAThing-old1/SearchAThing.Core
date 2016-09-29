@@ -317,6 +317,16 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// checks whatever given free query ( of type count(xx) ) returns at least one record
+        /// </summary>        
+        public static bool IS_EMPTY(this NpgsqlCommand cmd,
+            string free_query)
+        {            
+            cmd.CommandText = free_query.ToString();
+            return ((long)cmd.ExecuteScalar()) == 0L;
+        }
+
+        /// <summary>
         /// creates an insert into table (fields) values (val_objects) [returning idfield]        
         /// </summary>        
         public static string INSERT_QUERY(this NpgsqlCommand cmd,
