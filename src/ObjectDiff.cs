@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using static System.Math;
 using System.Linq;
 using MongoDB.Bson.Serialization.Attributes;
+using SearchAThing.Core;
 
 namespace SearchAThing
 {
@@ -87,138 +88,138 @@ namespace SearchAThing
             {
                 return $"PropName={PropertyFullPath} CollAdd={CollectionElementsToAdd?.Count} CollRemove={CollectionElementsToRemove?.Count}";
             }
+        }        
+
+    }
+
+    public static partial class Extensions
+    {
+
+        static string PropertyFullname(string path, string propertyName)
+        {
+            if (string.IsNullOrEmpty(path))
+                return propertyName;
+            else
+                return $"{path}.{propertyName}";
         }
 
-        public static partial class Extensions
+        static HashSet<Type> _PredefinedAdditionalDirectComparision;
+        static HashSet<Type> PredefinedAdditionalDirectComparision
         {
-
-            static string PropertyFullname(string path, string propertyName)
+            get
             {
-                if (string.IsNullOrEmpty(path))
-                    return propertyName;
-                else
-                    return $"{path}.{propertyName}";
-            }
-
-            static HashSet<Type> _PredefinedAdditionalDirectComparision;
-            static HashSet<Type> PredefinedAdditionalDirectComparision
-            {
-                get
+                if (_PredefinedAdditionalDirectComparision == null)
                 {
-                    if (_PredefinedAdditionalDirectComparision == null)
-                    {
-                        _PredefinedAdditionalDirectComparision = new HashSet<Type>();
-                        _PredefinedAdditionalDirectComparision.Add(typeof(string));
-                    }
-                    return _PredefinedAdditionalDirectComparision;
+                    _PredefinedAdditionalDirectComparision = new HashSet<Type>();
+                    _PredefinedAdditionalDirectComparision.Add(typeof(string));
                 }
+                return _PredefinedAdditionalDirectComparision;
             }
+        }
 
-            static Type tICollection = typeof(ICollection);
-            static Type tBsonIgnoreAttribute = typeof(BsonIgnoreAttribute);
+        static Type tICollection = typeof(ICollection);
+        static Type tBsonIgnoreAttribute = typeof(BsonIgnoreAttribute);
 
-            /// <summary>
-            /// compare two objects reporting differences for:
-            /// - public properties get, set
-            /// </summary>            
-            public static IEnumerable<ObjectDiff> Compare(this object o1, object o2, string prefix = "", Type type = null,
-                Func<Type, bool> execDirectComparision = null, object o1Root = null, object o2Root = null)
+        /// <summary>
+        /// compare two objects reporting differences for:
+        /// - public properties get, set
+        /// </summary>            
+        public static IEnumerable<ObjectDiff> Compare(this object o1, object o2, string prefix = "", Type type = null,
+            Func<Type, bool> execDirectComparision = null, object o1Root = null, object o2Root = null)
+        {
+            type = type ?? o1.GetType();
+            o1Root = o1Root ?? o1;
+            o2Root = o2Root ?? o2;
+
+            var props = type.GetProperties();
+
+            foreach (var prop in props)
             {
-                type = type ?? o1.GetType();
-                o1Root = o1Root ?? o1;
-                o2Root = o2Root ?? o2;
+                if (prop.CustomAttributes.Any(r => r.AttributeType == tBsonIgnoreAttribute)) continue;
 
-                var props = type.GetProperties();
+                // exclude properties without public setter
+                if (prop.GetSetMethod(false) == null) continue;
 
-                foreach (var prop in props)
+                var v1 = prop.GetValue(o1);
+                var v2 = prop.GetValue(o2);
+
+                if (v1 == null || v2 == null)
                 {
-                    if (prop.CustomAttributes.Any(r => r.AttributeType == tBsonIgnoreAttribute)) continue;
+                    if (v1 == null && v2 == null) continue;
 
-                    // exclude properties without public setter
-                    if (prop.GetSetMethod(false) == null) continue;
+                    yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
+                    continue;
+                }
 
-                    var v1 = prop.GetValue(o1);
-                    var v2 = prop.GetValue(o2);
+                if (prop.PropertyType.GetInterface(tICollection.Name) == tICollection)
+                {
+                    var coll1 = (ICollection)prop.GetMethod.Invoke(o1, null);
+                    var coll2 = (ICollection)prop.GetMethod.Invoke(o2, null);
 
-                    if (v1 == null || v2 == null)
-                    {
-                        if (v1 == null && v2 == null) continue;
-
+                    // one set was null
+                    if ((coll1 == null && coll2 != null) || (coll1 != null && coll2 == null))
                         yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
-                        continue;
-                    }
 
-                    if (prop.PropertyType.GetInterface(tICollection.Name) == tICollection)
+                    // either set non-null, proceed to analysis
+                    else if (coll1 != null && coll2 != null)
                     {
-                        var coll1 = (ICollection)prop.GetMethod.Invoke(o1, null);
-                        var coll2 = (ICollection)prop.GetMethod.Invoke(o2, null);
+                        // elements of coll1 paired with coll2
+                        var hsColl1 = new HashSet<object>();
 
-                        // one set was null
-                        if ((coll1 == null && coll2 != null) || (coll1 != null && coll2 == null))
-                            yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
+                        // elements of coll2 paired with coll1
+                        var hsColl2 = new HashSet<object>();
 
-                        // either set non-null, proceed to analysis
-                        else if (coll1 != null && coll2 != null)
+                        Type collType = null;
+
+                        foreach (var x1 in coll1)
                         {
-                            // elements of coll1 paired with coll2
-                            var hsColl1 = new HashSet<object>();
-
-                            // elements of coll2 paired with coll1
-                            var hsColl2 = new HashSet<object>();
-
-                            Type collType = null;
-
-                            foreach (var x1 in coll1)
+                            foreach (var x2 in coll2)
                             {
-                                foreach (var x2 in coll2)
+                                if (hsColl2.Contains(x2)) continue; // already paired element
+
+                                if (collType == null) collType = x1.GetType();
+
+                                if (collType.IsPrimitive || collType.IsValueType ||
+                                    PredefinedAdditionalDirectComparision.Contains(collType) ||
+                                    (execDirectComparision?.Invoke(collType)).GetValueOrDefault())
                                 {
-                                    if (hsColl2.Contains(x2)) continue; // already paired element
-
-                                    if (collType == null) collType = x1.GetType();
-
-                                    if (collType.IsPrimitive || collType.IsValueType ||
-                                        PredefinedAdditionalDirectComparision.Contains(collType) ||
-                                        (execDirectComparision?.Invoke(collType)).GetValueOrDefault())
-                                    {
-                                        if (Equals(x1, x2))
-                                        {
-                                            hsColl1.Add(x1);
-                                            hsColl2.Add(x2);
-                                        }
-                                    }
-                                    // if x1 equals x2
-                                    else if (!Compare(x1, x2, prefix, x1.GetType(), execDirectComparision, o1Root, o2Root).Any())
+                                    if (Equals(x1, x2))
                                     {
                                         hsColl1.Add(x1);
                                         hsColl2.Add(x2);
                                     }
                                 }
+                                // if x1 equals x2
+                                else if (!Compare(x1, x2, prefix, x1.GetType(), execDirectComparision, o1Root, o2Root).Any())
+                                {
+                                    hsColl1.Add(x1);
+                                    hsColl2.Add(x2);
+                                }
                             }
-
-                            var toAdd = coll2.Cast<object>().Where(r => !hsColl2.Contains(r)).ToList();
-                            var toRemove = coll1.Cast<object>().Where(r => !hsColl1.Contains(r)).ToList();
-
-                            if (toAdd.Count > 0 || toRemove.Count > 0)
-                                yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), null, null, null, null,
-                                    toRemove, toAdd);
                         }
+
+                        var toAdd = coll2.Cast<object>().Where(r => !hsColl2.Contains(r)).ToList();
+                        var toRemove = coll1.Cast<object>().Where(r => !hsColl1.Contains(r)).ToList();
+
+                        if (toAdd.Count > 0 || toRemove.Count > 0)
+                            yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), null, null, null, null,
+                                toRemove, toAdd);
                     }
-                    else if (prop.PropertyType.IsPrimitive || prop.PropertyType.IsValueType ||
-                        PredefinedAdditionalDirectComparision.Contains(prop.PropertyType) ||
-                        (execDirectComparision?.Invoke(prop.PropertyType)).GetValueOrDefault())
+                }
+                else if (prop.PropertyType.IsPrimitive || prop.PropertyType.IsValueType ||
+                    PredefinedAdditionalDirectComparision.Contains(prop.PropertyType) ||
+                    (execDirectComparision?.Invoke(prop.PropertyType)).GetValueOrDefault())
+                {
+                    if (!Equals(v1, v2)) yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
+                }
+                else
+                {
+                    foreach (var x in Compare(v1, v2, PropertyFullname(prefix, prop.Name), prop.PropertyType, execDirectComparision, o1Root, o2Root))
                     {
-                        if (!Equals(v1, v2)) yield return new ObjectDiff(PropertyFullname(prefix, prop.Name), o1, v1, o2, v2, null, null);
-                    }
-                    else
-                    {
-                        foreach (var x in Compare(v1, v2, PropertyFullname(prefix, prop.Name), prop.PropertyType, execDirectComparision, o1Root, o2Root))
-                        {
-                            yield return x;
-                        }
+                        yield return x;
                     }
                 }
             }
-
         }
 
     }
