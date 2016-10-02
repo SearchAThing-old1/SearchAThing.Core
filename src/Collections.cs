@@ -67,7 +67,7 @@ namespace SearchAThing
         /// </summary>        
         public static IEnumerable<T> RotateListUntil<T>(this IList<T> lst, Func<T, bool> lastRule, Func<T, bool> firstRule)
         {
-            var idxFirstRule = 0;
+            var idxFirstRule = -1;
             for (int i = 0; i < lst.Count; ++i)
             {
                 if (i == 0)
@@ -87,6 +87,8 @@ namespace SearchAThing
                     }
                 }
             }
+
+            if (idxFirstRule == -1) yield break;                     
 
             var j = idxFirstRule;
             var cnt = lst.Count;
