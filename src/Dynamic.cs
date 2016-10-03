@@ -23,6 +23,7 @@
 */
 #endregion
 
+using Newtonsoft.Json.Linq;
 using SearchAThing.Core;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,15 @@ namespace SearchAThing
 
         public static bool ContainsField(dynamic value, string field)
         {
+            if (value is JObject)
+            {
+                var jo = (JObject)value;
+
+                var q = jo.Children().Cast<JProperty>().ToList();
+
+                return q.Any(w => w != null && w.Name == field);
+            }
+
             return ((IDictionary<string, object>)value).ContainsKey(field);
         }
 
