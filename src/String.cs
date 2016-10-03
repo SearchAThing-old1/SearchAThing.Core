@@ -196,6 +196,30 @@ namespace SearchAThing
             return sb.ToString();
         }
 
+        /// <summary>
+        /// searches the given input string using given regex_pattern
+        /// </summary>        
+        public static string SearchRegex(this string input, string regex_pattern, RegexOptions opts = RegexOptions.None)
+        {
+            var regex = new Regex(regex_pattern, opts);
+
+            var match = regex.Match(input);
+
+            if (!match.Success) return null;
+
+            return match.Value;
+        }
+
+        /// <summary>
+        /// replace matched regex pattern from input with given replacement
+        /// </summary>        
+        public static string ReplaceRegex(this string input, string regex_pattern, string replacement, RegexOptions opts = RegexOptions.None)
+        {
+            var regex = new Regex(regex_pattern, opts);
+
+            return regex.Replace(input, replacement);
+        }
+
     }
 
 }
