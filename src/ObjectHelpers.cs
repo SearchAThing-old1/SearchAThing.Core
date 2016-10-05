@@ -75,6 +75,20 @@ namespace SearchAThing
 
         }
 
+        public static partial class Util
+        {
+
+            /// <summary>
+            /// dummy fn evaluator
+            /// it can be used to generate value type in anonymous property declarations            
+            /// </summary>            
+            public static T Eval<T>(Func<T> fn)
+            {
+                return fn();
+            }
+
+        }
+
     }
 
     public static partial class Extensions
