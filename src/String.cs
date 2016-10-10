@@ -137,13 +137,23 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// convert wildcard pattern to regex
+        /// the asterisk '*' character replace any group of chars
+        /// the question '?' character replace any single character
+        /// </summary>        
+        public static string WildcardToRegex(this string pattern)
+        {
+            return $"^{Regex.Escape(pattern).Replace("\\*", ".*").Replace('?', '.')}$";
+        }
+
+        /// <summary>
         /// return true if given string matches the given pattern
         /// the asterisk '*' character replace any group of chars
         /// the question '?' character replace any single character
         /// </summary>                
         public static bool WildcardMatch(this string str, string pattern, bool caseSentitive = true)
         {
-            var regexStr = $"^{Regex.Escape(pattern).Replace("\\*", ".*").Replace('?', '.')}$";
+            var regexStr = pattern.WildcardToRegex();
 
             Regex regex = null;
             if (caseSentitive)
@@ -194,7 +204,7 @@ namespace SearchAThing
             }
 
             return sb.ToString();
-        }       
+        }
 
     }
 
