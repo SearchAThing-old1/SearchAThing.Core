@@ -183,7 +183,7 @@ namespace SearchAThing
                     contains = contains && nr.LessThanTol(tol, to.Value);
             }
 
-            return false;
+            return contains;
         }
 
     }
