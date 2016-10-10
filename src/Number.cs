@@ -23,6 +23,7 @@
 */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using static System.Math;
@@ -107,6 +108,82 @@ namespace SearchAThing
         {
             var decfmt = "#".Repeat(significantDigits);
             return string.Format(CultureInfo.InvariantCulture, "{0:0." + decfmt + "}", d);
+        }
+
+        public static bool EqualsTol(this double x, double tol, double y)
+        {
+            return Abs(x - y) <= tol;
+        }
+
+        public static bool EqualsAutoTol(this double x, double y)
+        {
+            return x.EqualsTol(Abs(x * 1e-6), y);
+        }
+
+        public static bool GreatThanTol(this double x, double tol, double y)
+        {
+            return x > y && !x.EqualsTol(tol, y);
+        }
+
+        public static bool GreatThanOrEqualsTol(this double x, double tol, double y)
+        {
+            return x > y || x.EqualsTol(tol, y);
+        }
+
+        public static bool LessThanTol(this double x, double tol, double y)
+        {
+            return x < y && !x.EqualsTol(tol, y);
+        }
+
+        public static bool LessThanOrEqualsTol(this double x, double tol, double y)
+        {
+            return x < y || x.EqualsTol(tol, y);
+        }
+
+        public static int CompareTol(this double x, double tol, double y)
+        {
+            if (x.EqualsTol(tol, y)) return 0;
+            if (x < y) return -1;
+            return 1; // x > y
+        }
+
+        /// <summary>
+        /// eval if a number fits in given range
+        /// eg.
+        /// - "[0, 10)" are numbers from 0 (included) to 10 (excluded)
+        /// - "[10, 20]" are numbers from 10 (included) to 20 (included)
+        /// - "(30,)" are numbers from 30 (excluded) to +infinity
+        /// </summary>        
+        public static bool IsInRange(this double nr, double tol, string range)
+        {
+            var s = range.Trim();
+            var fromIncluded = s.StartsWith("[");
+            var toIncluded = s.EndsWith("]");
+            var ss = s.TrimStart('[', '(').TrimEnd(']').TrimEnd(')').Split(',');
+            var from = ss[0].Trim().Length == 0 ? new double?() : double.Parse(ss[0], CultureInfo.InvariantCulture);
+            var to = ss[1].Trim().Length == 0 ? new double?() : double.Parse(ss[1], CultureInfo.InvariantCulture);
+
+            if (!from.HasValue && !to.HasValue) return true;
+
+            var contains = true;
+
+            if (from.HasValue)
+            {
+                if (fromIncluded)
+                    contains = contains && nr.GreatThanOrEqualsTol(tol, from.Value);
+                else
+                    contains = contains && nr.GreatThanTol(tol, from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                if (toIncluded)
+                    contains = contains && nr.LessThanOrEqualsTol(tol, to.Value);
+                else
+                    contains = contains && nr.LessThanTol(tol, to.Value);
+            }
+
+            return false;
         }
 
     }
