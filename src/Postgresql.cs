@@ -430,6 +430,17 @@ namespace SearchAThing
             return (int)cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// exec non query
+        /// return nr. of affected records
+        /// </summary>  
+        public static int EXEC(this NpgsqlCommand cmd, string sql)
+        {
+            cmd.CommandText = sql;            
+
+            return (int)cmd.ExecuteNonQuery();
+        }
+
     }
 
     /// <summary>
