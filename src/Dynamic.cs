@@ -23,10 +23,12 @@
 */
 #endregion
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SearchAThing.Core;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using static System.Math;
 
@@ -138,6 +140,22 @@ namespace SearchAThing
         public static HashSet<T> ToHashSet<T>(dynamic arg)
         {
             return new HashSet<T>(ToList<T>(arg));
+        }
+
+        /// <summary>
+        /// retrieve an expando object, ready for members add
+        /// </summary>        
+        public static IDictionary<string, object> NewExpandoObject()
+        {
+            return new ExpandoObject();
+        }
+
+        /// <summary>
+        /// convert given expando object to a JObject
+        /// </summary>        
+        public static JObject AsJObject(this IDictionary<string, object> expando)
+        {
+            return JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic)expando));
         }
 
     }
