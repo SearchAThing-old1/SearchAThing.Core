@@ -267,6 +267,14 @@ namespace SearchAThing
             return new NpgsqlReaderEnumerable(cmd.ExecuteReader());
         }
 
+        /// <summary>
+        /// execute select query contained in the cmd
+        /// </summary>        
+        public static NpgsqlReaderEnumerable SELECT(this NpgsqlCommand cmd)
+        {            
+            return new NpgsqlReaderEnumerable(cmd.ExecuteReader());
+        }
+
         /// <summary>        
         /// executes a select of given fields from table with whereClauses
         /// </summary>        
