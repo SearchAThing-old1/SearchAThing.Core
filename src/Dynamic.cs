@@ -28,6 +28,7 @@ using Newtonsoft.Json.Linq;
 using SearchAThing.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using static System.Math;
@@ -151,11 +152,41 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// retrieve a new empty list of ExpandoObject type
+        /// </summary>        
+        public static List<IDictionary<string, object>> NewExpandoObjectList()
+        {
+            return new List<IDictionary<string, object>>();
+        }
+
+        /// <summary>
+        /// convert given object to an ExpandoObject
+        /// </summary>        
+        public static ExpandoObject ToExpando(this object obj)
+        {
+            IDictionary<string, object> expando = new ExpandoObject();
+
+            var type = obj.GetType();
+
+            foreach (var property in type.GetProperties()) expando.Add(property.Name, property.GetValue(obj));
+
+            return expando as ExpandoObject;
+        }
+
+        /// <summary>
         /// convert given expando object to a JObject
         /// </summary>        
-        public static JObject AsJObject(this IDictionary<string, object> expando)
+        public static JObject AsJObject(dynamic expando)
         {
-            return JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic)expando));
+            return JsonConvert.DeserializeObject(JsonConvert.SerializeObject(expando));
+        }
+
+        /// <summary>
+        /// creates a dynamic from an anonymous lambda
+        /// </summary>        
+        public static dynamic Eval<T>(this Func<T> fn)
+        {
+            return ToExpando(fn());
         }
 
     }
