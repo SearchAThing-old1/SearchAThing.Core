@@ -88,7 +88,7 @@ namespace SearchAThing
                 }
             }
 
-            if (idxFirstRule == -1) yield break;                     
+            if (idxFirstRule == -1) yield break;
 
             var j = idxFirstRule;
             var cnt = lst.Count;
@@ -98,6 +98,21 @@ namespace SearchAThing
                 ++j; if (j == lst.Count) j = 0;
 
                 --cnt;
+            }
+        }
+
+        /// <summary>
+        /// from a IList retrieve last n items
+        /// </summary>        
+        public static IEnumerable<T> TakeLast<T>(this IList<T> lst, int n)
+        {
+            var idx = lst.Count - n;
+
+            while (idx < lst.Count)
+            {
+                yield return lst[idx];
+
+                ++idx;
             }
         }
 
