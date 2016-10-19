@@ -65,8 +65,8 @@ namespace SearchAThing
                 if (File.Exists(filename)) return System.IO.Path.GetFullPath(filename);
 
                 var paths = Environment.GetEnvironmentVariable("PATH");
-                foreach (var path in paths.Split(';'))
-                {
+                foreach (var path in paths.Split(System.IO.Path.PathSeparator))
+                {                    
                     var pathname = System.IO.Path.Combine(path, filename);
                     if (File.Exists(pathname)) return pathname;
                 }
