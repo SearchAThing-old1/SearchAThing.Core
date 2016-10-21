@@ -101,6 +101,7 @@
     <Compile Include="ObjectDiff.cs" />
     <Compile Include="Dynamic.cs" />
     <Compile Include="JsonHelper.cs" />
+    <Compile Include="Assembly.cs" />
     <Compile Include="Postgresql.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Number.cs" />
