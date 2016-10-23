@@ -98,6 +98,7 @@
     <Compile Include="IEventOperation.cs" />
     <Compile Include="Fluent.cs" />
     <Compile Include="LinqExpr.cs" />
+    <Compile Include="Markdown.cs" />
     <Compile Include="ObjectDiff.cs" />
     <Compile Include="Dynamic.cs" />
     <Compile Include="JsonHelper.cs" />
