@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using static System.Math;
+using System.Linq;
 
 namespace SearchAThing
 {
@@ -38,11 +39,11 @@ namespace SearchAThing
         /// <summary>
         /// build a markdown table from the list of given objects using their properties as columns
         /// </summary>        
-        public static string ToMarkdownTable<T>(this IEnumerable<T> objs)
+        public static string ToMarkdownTable(this IEnumerable<dynamic> objs)
         {
             var sb = new StringBuilder();
 
-            var props = typeof(T).GetProperties();
+            var props = objs.First().GetType().GetProperties();
 
             var colwidths = new int[props.Length];
             foreach (var x in objs)
