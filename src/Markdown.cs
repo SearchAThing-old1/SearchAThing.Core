@@ -38,7 +38,7 @@ namespace SearchAThing
         /// <summary>
         /// build a markdown table from the list of given objects using their properties as columns
         /// </summary>        
-        public static string ToMarkdownTable<T>(this List<T> objs)
+        public static string ToMarkdownTable<T>(this IEnumerable<T> objs)
         {
             var sb = new StringBuilder();
 
