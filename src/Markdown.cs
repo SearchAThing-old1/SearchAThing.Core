@@ -43,9 +43,13 @@ namespace SearchAThing
         {
             var sb = new StringBuilder();
 
-            var props = objs.First().GetType().GetProperties();
+            var props = ((object)objs.First()).GetType().GetProperties();
 
             var colwidths = new int[props.Length];
+            for (int i = 0; i < props.Length; ++i)
+            {
+                colwidths[i] = Max(colwidths[i], props[i].Name.Length);
+            }
             foreach (var x in objs)
             {
                 for (int i = 0; i < props.Length; ++i)
