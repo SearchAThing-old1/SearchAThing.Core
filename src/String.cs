@@ -206,6 +206,17 @@ namespace SearchAThing
             return sb.ToString();
         }
 
+        /// <summary>
+        /// convert a string that exceed N given characters length to {prefix}{latest N chars}
+        /// </summary>        
+        public static string Latest(this string str, int last_n_chars, string prefix_if_exceed = "...")
+        {
+            if (str.Length <= last_n_chars)
+                return str;
+            else
+                return $"{prefix_if_exceed}{str.Substring(str.Length - last_n_chars, last_n_chars)}";
+        }
+
     }
 
 }
