@@ -23,11 +23,8 @@
 */
 #endregion
 
-using SearchAThing.Core;
-using System;
 using System.IO;
 using System.Reflection;
-using static System.Math;
 
 namespace SearchAThing
 {

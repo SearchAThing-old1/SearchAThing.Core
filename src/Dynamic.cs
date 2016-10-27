@@ -25,13 +25,10 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SearchAThing.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
-using static System.Math;
 
 namespace SearchAThing
 {
@@ -187,6 +184,11 @@ namespace SearchAThing
         public static dynamic Eval<T>(this Func<T> fn)
         {
             return ToExpando(fn());
+        }
+
+        public static string SerializeToJson<T>(this Func<T> fn)
+        {
+            return JsonConvert.SerializeObject(Eval(fn));
         }
 
     }
