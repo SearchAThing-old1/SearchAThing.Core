@@ -271,7 +271,7 @@ namespace SearchAThing
         /// execute select query contained in the cmd
         /// </summary>        
         public static NpgsqlReaderEnumerable SELECT(this NpgsqlCommand cmd)
-        {            
+        {
             return new NpgsqlReaderEnumerable(cmd.ExecuteReader());
         }
 
@@ -309,6 +309,20 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// executes a select scalar query        
+        /// </summary>        
+        public static T? Scalar<T>(this NpgsqlCommand cmd, string free_query) where T : struct
+        {
+            cmd.CommandText = free_query;
+            var r = cmd.ExecuteScalar();
+
+            if (r == null)
+                return null;
+            else
+                return new T?((T)r);
+        }
+
+        /// <summary>
         /// checks whatever given table is empty, under optional whereClause,
         /// by querying records count by given id field
         /// </summary>        
@@ -329,7 +343,7 @@ namespace SearchAThing
         /// </summary>        
         public static bool IS_EMPTY(this NpgsqlCommand cmd,
             string free_query)
-        {            
+        {
             cmd.CommandText = free_query.ToString();
             return ((long)cmd.ExecuteScalar()) == 0L;
         }
@@ -444,7 +458,7 @@ namespace SearchAThing
         /// </summary>  
         public static int EXEC(this NpgsqlCommand cmd, string sql)
         {
-            cmd.CommandText = sql;            
+            cmd.CommandText = sql;
 
             return (int)cmd.ExecuteNonQuery();
         }
