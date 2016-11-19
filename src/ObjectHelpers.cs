@@ -98,6 +98,11 @@ namespace SearchAThing
         public static TaggedObject<O, T1, T2> TaggedObject<O, T1, T2>(this O o, T1 t1, T2 t2) { return new TaggedObject<O, T1, T2>(o, t1, t2); }
         public static TaggedObject<O, T1, T2, T3> TaggedObject<O, T1, T2, T3>(this O o, T1 t1, T2 t2, T3 t3) { return new TaggedObject<O, T1, T2, T3>(o, t1, t2, t3); }
 
+        public static R Eval<T, R>(this T o, Func<T, R> fn)
+        {
+            return fn(o);
+        }
+
     }
 
 }
