@@ -50,11 +50,17 @@ namespace SearchAThing
 
         Stopwatch sw = new Stopwatch();
 
+        public int IncrementalInfoEachPercent { get; private set; }
+
+        int incremental_info_next_point = 0;
+
         /// <summary>
         /// init the progress stat and start internal timer
+        /// if incremental_info_each_percent=-1 it will not display the inline progress ...10%...20%...etc        
         /// </summary>        
-        public Progress(int total)
+        public Progress(int total, int incremental_info_each_percent = 1)
         {
+            IncrementalInfoEachPercent = incremental_info_each_percent;
             Total = total;
             sw.Start();
         }
@@ -73,6 +79,48 @@ namespace SearchAThing
         public void Stop()
         {
             sw.Stop();
+        }
+
+        int? check_left;
+        int? check_top;
+
+        /// <summary>
+        /// check if incremental point reached
+        /// </summary>
+        public bool Check()
+        {
+            if (Current >= incremental_info_next_point)
+            {
+                incremental_info_next_point += (int)(Total * ((double)IncrementalInfoEachPercent / 100.0));
+                incremental_info_next_point = Min(incremental_info_next_point, Total);
+                return true;
+            }
+            return false;
+        }
+
+        public void CheckShow()
+        {
+            if (!check_left.HasValue)
+            {
+                check_left = Console.CursorLeft;
+                check_top = Console.CursorTop;
+            }
+
+            if (Check())
+            {
+                Console.SetCursorPosition(check_left.Value, check_top.Value);
+                Console.Write($"{ProgressPercentString()}");
+            }
+        }
+
+        public void Pause()
+        {
+            sw.Stop();
+        }
+
+        public void Resume()
+        {
+            sw.Start();
         }
 
         public TimeSpan Elapsed { get { return sw.Elapsed; } }
@@ -133,7 +181,10 @@ namespace SearchAThing
         /// <summary>
         /// retrieve a progress percent string ( eg. "20.4%" )
         /// </summary>
-        public string ProgressPercentString { get { return string.Format(CultureInfo.InvariantCulture, "{0,6:0.0}%", ProgressFactor * 100); } }
+        public string ProgressPercentString(int fmt_len = 0)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0," + fmt_len.ToString() + ":0.0}%", ProgressFactor * 100);
+        }
 
         /// <summary>
         /// retrieve an estimated remaining time ( eg. "ETA 00:02:30" )
@@ -184,6 +235,29 @@ namespace SearchAThing
             return RamUsedBytes().HumanReadable(onlyBytesUnit: false);
         }
 
+        int live_detail_previous = -1;
+
+        /// <summary>
+        /// print detail to console overwriting the same line
+        /// </summary>
+        public void LiveDetail()
+        {
+            if (live_detail_previous == Total) Console.WriteLine();
+            else if (live_detail_previous > Total) return;
+            else if (Check())
+            {
+                Console.Write(Detail); Console.Write("        ");
+                Console.SetCursorPosition(0, Console.CursorTop);
+            }
+
+            ++live_detail_previous;
+        }
+
+        public string ItemRateSecStr(int fmt_len = 0)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "rate={0," + fmt_len.ToString() + ":0.0}", ItemRateSec);
+        }
+
         /// <summary>
         /// detailed representation ( eg. "20% (10 Mb) [ETA=02:10:00] rate=200/sec" )
         /// </summary>
@@ -191,7 +265,7 @@ namespace SearchAThing
         {
             get
             {
-                return $"{ProgressPercentString} ({RamUsedString()}) [{ETAString} / {ElapsedStr}] rate={Round(ItemRateSec, 1)}/sec ) {Current} of {Total}";
+                return $"{ProgressPercentString(6)} ({RamUsedString()}) [{ETAString} / {ElapsedStr}] {ItemRateSecStr(6)} cnt= {Current} of {Total}";
             }
         }
 
