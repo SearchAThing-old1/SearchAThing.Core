@@ -31,7 +31,9 @@ using System.Dynamic;
 using System.Globalization;
 using System.Text;
 using static System.Math;
+using System.Linq;
 using System.Collections;
+using System.Threading;
 
 namespace SearchAThing
 {
@@ -350,6 +352,7 @@ namespace SearchAThing
 
         /// <summary>
         /// creates an insert into table (fields) values (val_objects) [returning idfield]        
+        /// performance note : if not necessary set returning_id to null for faster insert
         /// </summary>        
         public static string INSERT_QUERY(this NpgsqlCommand cmd,
             string intoTable,
@@ -548,5 +551,202 @@ namespace SearchAThing
             throw new Exception("not implemented");
         }
     }
+
+    #region threaded query bunch
+
+    enum ThreadedQueryBunchAction
+    {
+        ConsumeQuery,
+        ForceFlush,
+        Shutdown
+    }
+
+    /// <summary>
+    /// allow to execute a bunch of query using parallel connections
+    /// for faster insert
+    /// it will flush automatically when the QueryiesStringLexMax exceed or can be flushed manually
+    /// </summary>
+    public class ThreadedBunchQuery : IDisposable
+    {
+        Func<NpgsqlConnection> newConn = null;
+        Thread[] ths = null;
+        ManualResetEvent[] mres = null;
+        string[] qrys = null;
+        ThreadedQueryBunchAction[] actions = null;
+        object lck = new object();
+        bool[] thsrdys = null;
+        bool debug = false;
+        int th_search_cursor = 0;
+
+        public int ThreadCount { get; private set; }
+        public int QueriesStringLenMax { get; private set; }
+
+        void ThreadFn(object arg)
+        {
+            var conn = newConn();
+            var cmd = new NpgsqlCommand("", conn);
+            var sb = new StringBuilder();
+
+            var thidx = (int)arg;
+            var mre = mres[thidx];
+
+            Action flush = () =>
+            {
+                var allthstatus = thsrdys.Select((w, i) => $"{i}:{w}");
+
+                Console.WriteLine($"thread idx:{thidx} flushing {string.Join(",", allthstatus)}...");
+
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+
+                sb.Clear();
+                sb = null;
+
+                sb = new StringBuilder();
+                GC.Collect();
+            };
+
+            bool runloop = true;
+
+            while (runloop)
+            {
+                lock (lck)
+                {
+                    // set this thread as ready
+                    thsrdys[thidx] = true;
+                }
+
+                mre.WaitOne();
+                mre.Reset();
+
+                lock (lck)
+                {
+                    // set this thread as busy
+                    thsrdys[thidx] = false;
+                }
+
+                switch (actions[thidx])
+                {
+                    case ThreadedQueryBunchAction.ConsumeQuery:
+                        {
+                            sb.AppendLine(qrys[thidx] + ";");
+                            if (sb.Length > QueriesStringLenMax) flush();
+                        }
+                        break;
+
+                    case ThreadedQueryBunchAction.ForceFlush:
+                        {
+                            if (sb.Length > 0) flush();
+                        }
+                        break;
+
+                    case ThreadedQueryBunchAction.Shutdown:
+                        {
+                            if (sb.Length > 0) flush();
+                            runloop = false;
+                        }
+                        break;
+                }
+            }
+
+            conn.Close();
+        }
+
+        public ThreadedBunchQuery(Func<NpgsqlConnection> _newConn, int thread_count = 2, int queries_string_len_max = 10000, bool _debug = false)
+        {
+            ThreadCount = thread_count;
+            QueriesStringLenMax = queries_string_len_max;
+            debug = _debug;
+            newConn = _newConn;
+            ths = new Thread[thread_count];
+            mres = new ManualResetEvent[thread_count];
+            qrys = new string[thread_count];
+            actions = new ThreadedQueryBunchAction[thread_count];
+            thsrdys = new bool[thread_count];
+
+            for (int i = 0; i < thread_count; ++i)
+            {
+                thsrdys[i] = true;
+                ths[i] = new Thread(new ParameterizedThreadStart(ThreadFn));
+                mres[i] = new ManualResetEvent(false);
+                ths[i].Start(i);
+            }
+        }
+
+        int PrepareRequest()
+        {
+            var thidx_rdy = -1;
+
+            Func<int> SearchAvailThread = () =>
+            {
+                int res = -1;
+
+                for (int k = 0; k < ThreadCount; ++k)
+                {
+                    var thidx = th_search_cursor;
+
+                    if (thsrdys[thidx])
+                    {
+                        res = thidx;
+                        break;
+                    }
+
+                    ++th_search_cursor;
+                    if (th_search_cursor == ThreadCount) th_search_cursor = 0;
+                }
+
+                return res;
+            };
+
+            while (thidx_rdy == -1)
+            {
+                // search an avail thread
+                lock (lck)
+                {
+                    thidx_rdy = SearchAvailThread();
+                }                
+            }
+
+            return thidx_rdy;
+        }
+
+        public void Enqueue(string q)
+        {
+            var thidx_rdy = PrepareRequest();
+            qrys[thidx_rdy] = q;
+            actions[thidx_rdy] = ThreadedQueryBunchAction.ConsumeQuery;
+            mres[thidx_rdy].Set(); // unlock available consumer
+        }
+
+        public void Flush()
+        {
+
+            while (thsrdys.Any(w => !w))
+            {
+                Thread.Sleep(500);
+            }
+
+            for (int i = 0; i < ThreadCount; ++i)
+            {
+                actions[i] = ThreadedQueryBunchAction.ForceFlush;
+                mres[i].Set(); // unlock available consumer
+            }
+        }
+
+        public void Shutdown()
+        {
+            var thidx_rdy = PrepareRequest();
+            actions[thidx_rdy] = ThreadedQueryBunchAction.Shutdown;
+            mres[thidx_rdy].Set(); // unlock available consumer
+            for (int j = 0; j < ThreadCount; ++j) ths[j].Join();
+        }
+
+        public void Dispose()
+        {
+            Flush();
+        }
+    }
+
+    #endregion
 
 }
