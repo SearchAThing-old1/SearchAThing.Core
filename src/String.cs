@@ -32,6 +32,7 @@ using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using static System.FormattableString;
 
 namespace SearchAThing
 {
@@ -42,9 +43,9 @@ namespace SearchAThing
         /// <summary>
         /// Returns the given string stripped from the given part if exists at beginning.
         /// </summary>        
-        public static string StripBegin(this string str, char c)
+        public static string StripBegin(this string str, char c, bool ignoreCase = false)
         {
-            if (str.Length > 0 && str[0] == c)
+            if (str.Length > 0 && (ignoreCase ? (char.ToUpper(str[0]) == char.ToUpper(c)) : (str[0] == c)))
                 return str.Substring(1, str.Length - 1);
             else
                 return str;
@@ -53,9 +54,9 @@ namespace SearchAThing
         /// <summary>
         /// Returns the given string stripped from the given part if exists at beginning.
         /// </summary>        
-        public static string StripBegin(this string str, string partToStrip)
+        public static string StripBegin(this string str, string partToStrip, bool ignoreCase = false)
         {
-            if (str.StartsWith(partToStrip))
+            if (str.StartsWith(partToStrip, ignoreCase, CultureInfo.CurrentCulture))
             {
                 var ptsl = partToStrip.Length;
                 return str.Substring(ptsl, str.Length - ptsl);
@@ -67,9 +68,9 @@ namespace SearchAThing
         /// <summary>
         /// Returns the given string stripped from the given part if exists at end.
         /// </summary>        
-        public static string StripEnd(this string str, char c)
+        public static string StripEnd(this string str, char c, bool ignoreCase = false)
         {
-            if (str.Length > 0 && str[str.Length - 1] == c)
+            if (str.Length > 0 && (ignoreCase ? (char.ToUpper(str[str.Length - 1]) == char.ToUpper(c)) : (str[str.Length - 1] == c)))
                 return str.Substring(0, str.Length - 1);
             else
                 return str;
@@ -78,9 +79,9 @@ namespace SearchAThing
         /// <summary>
         /// Returns the given string stripped from the given part if exists at end.
         /// </summary>        
-        public static string StripEnd(this string str, string partToStrip)
+        public static string StripEnd(this string str, string partToStrip, bool ignoreCase = false)
         {
-            if (str.EndsWith(partToStrip))
+            if (str.EndsWith(partToStrip, ignoreCase, CultureInfo.CurrentCulture))
                 return str.Substring(0, str.Length - partToStrip.Length);
             else
                 return str;
@@ -103,21 +104,22 @@ namespace SearchAThing
 
         /// <summary>
         /// Returns a human readable bytes length. (eg. 1000, 1K, 1M, 1G, 1T)
+        /// if onlyBytesUnit is set to false it will enable representation through K, M, G, T suffixes
         /// </summary>        
-        public static string HumanReadable(this long bytes, bool omitByteSuffix = true, long multiple = 1L)
+        public static string HumanReadable(this long bytes, bool onlyBytesUnit = true, long bytesMultiple = 1L, int decimals = 1)
         {
             var k = 1024L;
             var m = k * 1024;
             var g = m * 1024;
             var t = g * 1024;
 
-            bytes = (long)((double)bytes).MRound(multiple);
+            if (bytesMultiple != 1L) bytes = (long)((double)bytes).MRound(bytesMultiple);
 
-            if (bytes < k) { if (omitByteSuffix) return $"{bytes}"; else return $"{bytes} b"; }
-            else if (bytes >= k && bytes < m) return $"{((double)bytes) / k} Kb";
-            else if (bytes >= m && bytes < g) return $"{((double)bytes) / m} Mb";
-            else if (bytes >= g && bytes < t) return $"{((double)bytes) / g} Gb";
-            else return $"{((double)bytes) / t}T";
+            if (bytes < k) { if (onlyBytesUnit) return $"{bytes}"; else return Invariant($"{bytes} b"); }
+            else if (bytes >= k && bytes < m) return string.Format("{0,6:0." + "0".Repeat(decimals) + "} Kb", ((double)bytes) / k);
+            else if (bytes >= m && bytes < g) return string.Format("{0,6:0." + "0".Repeat(decimals) + "} Mb", ((double)bytes) / m);
+            else if (bytes >= g && bytes < t) return string.Format("{0,6:0." + "0".Repeat(decimals) + "} Gb", ((double)bytes) / g);
+            else return string.Format("{0:0." + "0".Repeat(decimals) + "} Tb", ((double)bytes) / t);
         }
 
         /// <summary>
