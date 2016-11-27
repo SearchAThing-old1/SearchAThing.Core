@@ -219,6 +219,14 @@ namespace SearchAThing
                 return $"{prefix_if_exceed}{str.Substring(str.Length - last_n_chars, last_n_chars)}";
         }
 
+        /// <summary>
+        /// check if given string contains the part ( ignoring case )
+        /// </summary>        
+        public static bool ContainsIgnoreCase(this string str, string part)
+        {
+            return str.ToUpper().Contains(part.ToUpper());
+        }
+
     }
 
 }
