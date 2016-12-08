@@ -54,7 +54,9 @@ namespace SearchAThing
             {
                 for (int i = 0; i < props.Length; ++i)
                 {
-                    colwidths[i] = Max(colwidths[i], props[i].GetValue(x).ToString().Length);
+                    var v = props[i].GetValue(x);
+
+                    if (v != null) colwidths[i] = Max(colwidths[i], v.ToString().Length);
                 }
             }
 
@@ -78,7 +80,14 @@ namespace SearchAThing
                 for (int i = 0; i < props.Length; ++i)
                 {
                     var fmt = $" {{0,-{colwidths[i]}}} ";
-                    sb.Append(string.Format(fmt, props[i].GetValue(o).ToString()));
+
+                    var v = props[i].GetValue(o);
+
+                    if (v != null)
+                        sb.Append(string.Format(fmt, v.ToString()));
+                    else
+                        sb.Append(string.Format(fmt, ""));
+
                     if (i != props.Length - 1) sb.Append('|');
                 }
                 sb.AppendLine();
