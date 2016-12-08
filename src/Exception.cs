@@ -40,10 +40,25 @@ namespace SearchAThing
             var sb = new StringBuilder();
 
             sb.AppendLine($"exception message : [{ex.Message}]");
+            sb.AppendLine($"exception type : [{ex.GetType()}]");
             sb.AppendLine($"stacktrace : [{ex.StackTrace.ToString()}]");
 
+            Func<Exception, string> inner_detail = null;
+            inner_detail = (e) =>
+            {
+                if (e.InnerException != null)
+                {
+                    sb.AppendLine($"inner exception : {e.InnerException.Message}");
+
+                    inner_detail(e.InnerException);
+                }
+                return "";
+            };
+
+            inner_detail(ex);
+
             return sb.ToString();
-        }      
+        }
 
     }
 
