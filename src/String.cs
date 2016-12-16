@@ -227,6 +227,14 @@ namespace SearchAThing
             return str.ToUpper().Contains(part.ToUpper());
         }
 
+        /// <summary>
+        /// convert invalid worksheet characters :\/?*[]' into underscore
+        /// </summary>        
+        public static string NormalizeWorksheetName(this string s)
+        {
+            return Regex.Replace(s, $"[{Regex.Escape(@":\/?*[]'").Replace("]", "\\]")}]", "_");
+        }
+
     }
 
 }
