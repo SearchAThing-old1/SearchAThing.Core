@@ -235,6 +235,21 @@ namespace SearchAThing
             return Regex.Replace(s, $"[{Regex.Escape(@":\/?*[]'").Replace("]", "\\]")}]", "_");
         }
 
+        public static string NormalizeFilename(this string filename, char subst = '_')
+        {
+            string res = "";
+            var invalid_chars = System.IO.Path.GetInvalidFileNameChars();
+            for (int i = 0; i < filename.Length; ++i)
+            {
+                if (invalid_chars.Any(t => t == filename[i]))
+                    res += subst;
+                else
+                    res += filename[i];
+            }
+
+            return res;            
+        }
+
     }
 
 }
