@@ -53,13 +53,15 @@ namespace SearchAThing
         public int IncrementalInfoEachPercent { get; private set; }
 
         int incremental_info_next_point = 0;
+        bool use_cursor = true;
 
         /// <summary>
         /// init the progress stat and start internal timer
         /// if incremental_info_each_percent=-1 it will not display the inline progress ...10%...20%...etc        
         /// </summary>        
-        public Progress(int total, int incremental_info_each_percent = 1)
+        public Progress(int total, int incremental_info_each_percent = 1, bool _use_cursor = true)
         {
+            use_cursor = _use_cursor;
             IncrementalInfoEachPercent = incremental_info_each_percent;
             Total = total;
             sw.Start();
@@ -100,7 +102,7 @@ namespace SearchAThing
 
         public void CheckShow()
         {
-            if (!check_left.HasValue)
+            if (use_cursor && !check_left.HasValue)
             {
                 check_left = Console.CursorLeft;
                 check_top = Console.CursorTop;
@@ -108,8 +110,15 @@ namespace SearchAThing
 
             if (Check())
             {
-                Console.SetCursorPosition(check_left.Value, check_top.Value);
-                Console.Write($"{ProgressPercentString()}");
+                if (use_cursor)
+                {
+                    Console.SetCursorPosition(check_left.Value, check_top.Value);
+                    Console.Write($"{ProgressPercentString()}");
+                }
+                else
+                {
+                    Console.WriteLine($"{ProgressPercentString()}");
+                }
             }
         }
 
@@ -246,8 +255,13 @@ namespace SearchAThing
             else if (live_detail_previous > Total) return;
             else if (Check())
             {
-                Console.Write(Detail); Console.Write("        ");
-                Console.SetCursorPosition(0, Console.CursorTop);
+                if (use_cursor)
+                {
+                    Console.Write(Detail); Console.Write("        ");
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                }
+                else
+                    Console.WriteLine(Detail);
             }
 
             ++live_detail_previous;
