@@ -88,6 +88,14 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// extract line from string buffer
+        /// </summary>        
+        public static string NextLine(this string txt, ref int off)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Smart line splitter that split a text into lines whatever unix or windows line ending style.
         /// By default its remove empty lines.
         /// </summary>        
@@ -247,7 +255,86 @@ namespace SearchAThing
                     res += filename[i];
             }
 
-            return res;            
+            return res;
+        }
+
+        public static StringWrapper ToStringWrapper(this StringBuilder sb)
+        {
+            return new StringWrapper() { str = sb.ToString() };
+        }
+
+    }
+
+    public class StringWrapperLineReader
+    {
+
+        public StringWrapper Strw { get; private set; }
+
+        IEnumerator<string> en = null;
+
+        bool has_next = false;
+
+        public StringWrapperLineReader(StringWrapper strw)
+        {
+            Strw = strw;
+
+            en = strw.Lines().GetEnumerator();
+
+            has_next = en.MoveNext();
+        }
+
+        public bool HasNext() { return has_next; }
+
+        public StringWrapper GetNext()
+        {
+            var res = new StringWrapper() { str = en.Current };
+            has_next = en.MoveNext();
+            return res;
+        }
+
+    }
+
+    /// <summary>
+    /// wrapper for memory optimized string argument passing
+    /// </summary>
+    public class StringWrapper
+    {
+        public string str;
+
+        public StringWrapperLineReader LineReader()
+        {
+            return new StringWrapperLineReader(this);
+        }
+
+        public IEnumerable<string> Lines()
+        {
+            int back_off = 0;
+            int off = 0;
+            int maxlen = str.Length;
+
+            while (off < maxlen)
+            {
+                while (off < maxlen && str[off] != '\r' && str[off] != '\n') ++off;
+                if (off == maxlen)
+                {
+                    if (back_off != off)
+                        yield return str.Substring(back_off, off - back_off + ((off == maxlen) ? 0 : 1));
+                }
+                ++off;
+
+                if (off > 0 && str[off - 1] == '\r' && str[off] == '\n') ++off;
+
+                if (back_off != off)
+                    yield return str.Substring(back_off, off - back_off + ((off == maxlen) ? 0 : 1));
+
+                back_off = off;
+            }
+
+        }
+
+        public override string ToString()
+        {
+            return str;
         }
 
     }
