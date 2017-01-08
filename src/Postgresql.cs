@@ -58,6 +58,17 @@ namespace SearchAThing
     {
 
         /// <summary>
+        /// when used within npgsql conn BeginBinaryImport allow to write safely nullable as null
+        /// </summary>        
+        public static void SafeWrite<T>(this NpgsqlBinaryImporter wr, T obj)
+        {
+            if (obj == null)
+                wr.WriteNull();
+            else
+                wr.Write(obj);
+        }
+
+        /// <summary>
         /// return the object cast to type T
         /// or specified defaultValue if the obj is a DBNull.Value
         /// </summary>
