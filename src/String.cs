@@ -318,14 +318,29 @@ namespace SearchAThing
                 if (off == maxlen)
                 {
                     if (back_off != off)
+                    {
+                        var trimend_cnt = 0;
+                        {
+                            var j = off - 1;
+                            while (j >= 0 && str[j] == '\r' || str[j] == '\n') { --j; ++trimend_cnt; }
+                        }
+
                         yield return str.Substring(back_off, off - back_off + ((off == maxlen) ? 0 : 1));
+                    }
                 }
                 ++off;
 
                 if (off > 0 && str[off - 1] == '\r' && str[off] == '\n') ++off;
 
                 if (back_off != off)
-                    yield return str.Substring(back_off, off - back_off + ((off == maxlen) ? 0 : 1));
+                {
+                    var trimend_cnt = 0;
+                    {
+                        var j = off - 1;
+                        while (j >= 0 && str[j] == '\r' || str[j] == '\n') { --j; ++trimend_cnt; }
+                    }
+                    yield return str.Substring(back_off, off - back_off - trimend_cnt);
+                }
 
                 back_off = off;
             }
