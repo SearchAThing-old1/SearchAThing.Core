@@ -33,6 +33,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using static System.FormattableString;
+using Newtonsoft.Json;
 
 namespace SearchAThing
 {
@@ -263,6 +264,11 @@ namespace SearchAThing
             return new StringWrapper() { str = sb.ToString() };
         }
 
+        public static string ToJson(this object o)
+        {
+            return JsonConvert.SerializeObject(o);
+        }
+
     }
 
     public class StringWrapperLineReader
@@ -350,7 +356,7 @@ namespace SearchAThing
         public override string ToString()
         {
             return str;
-        }
+        }        
 
     }
 
