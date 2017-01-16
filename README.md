@@ -11,6 +11,15 @@ in order to build successfully its suggested to clone follow repository [SearchA
 
 - install mono-complete
 
+- add ref assemblies
+
+```
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A7E0328081BFF6A14DA29AA6A19B38D3D831EF
+echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+apt-get update
+apt-get install  referenceassemblies-pcl
+```
+
 - edit ~/.config/NuGet/NuGet.Config
 
 ensure a local repositoryPath is activated, this way the .csproj will search in $(HOME)/nuget-packages and will found required references
