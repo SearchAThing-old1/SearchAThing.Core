@@ -53,6 +53,17 @@ namespace SearchAThing
         }
 
         /// <summary>
+        /// Round the given value using the multiple basis
+        /// </summary>        
+        public static double MRound(this double value, double? multiple)
+        {
+            if (multiple.HasValue)
+                return value.MRound(multiple.Value);
+            else
+                return value;
+        }
+
+        /// <summary>
         /// convert given angle(rad) to degree
         /// </summary>        
         public static double ToDeg(this double angleRad)
