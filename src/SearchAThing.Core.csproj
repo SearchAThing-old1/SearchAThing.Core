@@ -11,9 +11,9 @@
     <AssemblyName>SearchAThing.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile />	
 	<PackagesDir>c:\nuget-packages</PackagesDir>
-	<PackagesDir Condition=" '$(OS)' == 'Unix' ">/root/nuget-packages</PackagesDir>
+	<PackagesDir Condition=" '$(OS)' == 'Unix' ">$(HOME)/nuget-packages</PackagesDir>
   </PropertyGroup>  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
