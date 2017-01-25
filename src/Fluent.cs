@@ -38,10 +38,21 @@ namespace SearchAThing
         {
             foreach (var x in en)
             {
-                act(x);                
-            }            
+                act(x);
+            }
         }
-        
+
+        public static void Foreach<D>(this IEnumerable<D> en, Action<D, int> act)
+        {
+            int i = 0;
+            foreach (var x in en)
+            {
+                act(x, i);
+
+                ++i;
+            }
+        }
+
         public static void Action<O>(this O o, Action<O> act)
         {
             act(o);
