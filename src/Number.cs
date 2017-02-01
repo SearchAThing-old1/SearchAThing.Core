@@ -42,14 +42,30 @@ namespace SearchAThing
             return Abs(x - y) < Min(x, y) * precision;
         }
 
+
         /// <summary>
         /// Round the given value using the multiple basis
         /// </summary>        
         public static double MRound(this double value, double multiple)
         {
+            if (Abs(multiple) < double.Epsilon) return value;
+
             var p = Round(value / multiple);
 
             return Truncate(p) * multiple;
+        }
+
+
+        /// <summary>
+        /// Round the given value using the multiple basis
+        /// if null return null
+        /// </summary>        
+        public static double? MRound(this double? value, double multiple)
+        {
+            if (value.HasValue)
+                return value.Value.MRound(multiple);
+            else
+                return null;
         }
 
         /// <summary>
