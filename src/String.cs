@@ -307,7 +307,7 @@ namespace SearchAThing
         /// </summary>        
         public static string InvariantTime(this DateTime dt, string sep = "-")
         {
-            return string.Format("{0:0000}{1}{2:00}{3}{4:00}", dt.Hour, sep, dt.Minute, sep, dt.Second);
+            return string.Format("{0:00}{1}{2:00}{3}{4:00}", dt.Hour, sep, dt.Minute, sep, dt.Second);
         }
 
     }
