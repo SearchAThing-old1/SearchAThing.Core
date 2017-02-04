@@ -269,6 +269,47 @@ namespace SearchAThing
             return JsonConvert.SerializeObject(o);
         }
 
+        /// <summary>
+        /// removes all characters that aren't 0-9 dot or comma
+        /// </summary>        
+        public static string TrimNonNumericCharacters(this string s)
+        {
+            string res = "";
+
+            for (int i = 0; i < s.Length; ++i)
+            {
+                if (char.IsNumber(s[i]) || s[i] == '.' || s[i] == ',') res += $"{s[i]}";
+            }
+
+            return res;
+        }
+
+        public static int ParseInt(this string s) { return int.Parse(s); }
+
+        /// <summary>
+        /// return yyyy-MM-dd HH:mm.ss representation
+        /// </summary>        
+        public static string InvarianteDateTime(this DateTime dt, string datesep = "-", string timesep = ":")
+        {
+            return $"{dt.InvariantDate(datesep)} {dt.InvariantTime(timesep)}";
+        }
+
+        /// <summary>
+        /// return yyyy-MM-dd representation
+        /// </summary>        
+        public static string InvariantDate(this DateTime dt, string sep = "-")
+        {
+            return string.Format("{0:0000}{1}{2:00}{3}{4:00}", dt.Year, sep, dt.Month, sep, dt.Day);
+        }
+
+        /// <summary>
+        /// return HH:mm.ss representation
+        /// </summary>        
+        public static string InvariantTime(this DateTime dt, string sep = "-")
+        {
+            return string.Format("{0:0000}{1}{2:00}{3}{4:00}", dt.Hour, sep, dt.Minute, sep, dt.Second);
+        }
+
     }
 
     public class StringWrapperLineReader
@@ -356,7 +397,7 @@ namespace SearchAThing
         public override string ToString()
         {
             return str;
-        }        
+        }
 
     }
 
