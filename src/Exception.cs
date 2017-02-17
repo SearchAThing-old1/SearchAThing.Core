@@ -46,6 +46,13 @@ namespace SearchAThing
             Func<Exception, string> inner_detail = null;
             inner_detail = (e) =>
             {
+                if (e is Npgsql.PostgresException)
+                {
+                    var pex = e as Npgsql.PostgresException;
+
+                    sb.AppendLine($"npgsql statement [{pex.Statement}]");
+                }
+
                 if (e.InnerException != null)
                 {
                     sb.AppendLine($"inner exception : {e.InnerException.Message}");
