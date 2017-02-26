@@ -310,6 +310,14 @@ namespace SearchAThing
             return string.Format("{0:00}{1}{2:00}{3}{4:00}", dt.Hour, sep, dt.Minute, sep, dt.Second);
         }
 
+        /// <summary>
+        /// retrieve nr. of occurrence of given pattern through regex
+        /// </summary>        
+        public static int RegexMatch(this string s, string pattern, RegexOptions opt = RegexOptions.None)
+        {
+            return Regex.Matches(s, pattern, opt).Count;
+        }
+
     }
 
     public class StringWrapperLineReader
