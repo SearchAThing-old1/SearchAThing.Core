@@ -37,34 +37,57 @@ namespace SearchAThing
 
         public static string Details(this Exception ex)
         {
-            var sb = new StringBuilder();
-
-            sb.AppendLine($"exception message : [{ex.Message}]");
-            sb.AppendLine($"exception type : [{ex.GetType()}]");
-            sb.AppendLine($"stacktrace : [{ex.StackTrace.ToString()}]");
-
-            Func<Exception, string> inner_detail = null;
-            inner_detail = (e) =>
+            try
             {
-                if (e is Npgsql.PostgresException)
+                var sb = new StringBuilder();
+
+                sb.AppendLine($"exception message : [{ex.Message}]");
+                sb.AppendLine($"exception type : [{ex.GetType()}]");
+                sb.AppendLine($"stacktrace : [{ex.StackTrace.ToString()}]");
+
+                Func<Exception, string> inner_detail = null;
+                inner_detail = (e) =>
                 {
-                    var pex = e as Npgsql.PostgresException;
+                    if (e is Npgsql.PostgresException)
+                    {
+                        var pex = e as Npgsql.PostgresException;
 
-                    sb.AppendLine($"npgsql statement [{pex.Statement}]");
-                }
+                        sb.AppendLine($"npgsql statement [{pex.Statement}]");
+                    }
 
-                if (e.InnerException != null)
-                {
-                    sb.AppendLine($"inner exception : {e.InnerException.Message}");
+                    if (e is System.Data.Entity.Validation.DbEntityValidationException)
+                    {
+                        var dex = e as System.Data.Entity.Validation.DbEntityValidationException;
 
-                    inner_detail(e.InnerException);
-                }
-                return "";
-            };
+                        foreach (var deve in dex.EntityValidationErrors)
+                        {
+                            sb.Append($"db validation error entry : [{deve.Entry}]");
 
-            inner_detail(ex);
+                            foreach (var k in deve.ValidationErrors)
+                            {
+                                sb.Append($" {k.ErrorMessage}");
+                            }
+                            sb.AppendLine();
+                        }
+                    }
 
-            return sb.ToString();
+                    if (e.InnerException != null)
+                    {
+                        sb.AppendLine($"inner exception : {e.InnerException.Message}");
+
+                        inner_detail(e.InnerException);
+                    }
+                    return "";
+                };
+
+                inner_detail(ex);
+
+                return sb.ToString();
+            }
+            catch (Exception ex0)
+            {
+                return $"exception generating ex detail : {ex0?.Message}";
+            }
         }
 
     }
