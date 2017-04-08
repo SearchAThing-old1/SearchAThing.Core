@@ -32,18 +32,46 @@ using static System.Math;
 namespace SearchAThing
 {
 
+    public class ErrorInfo
+    {
+
+        public string Message { get; set; }
+        public string ExceptionType { get; set; }
+        public string Stacktrace { get; set; }
+        public string InnerException { get; set; }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"exception message : [{Message}]");
+            sb.AppendLine($"exception type : [{ExceptionType}]");
+            sb.AppendLine($"stacktrace : [{Stacktrace}]");
+
+            return sb.ToString();
+        }
+
+    }
+
     public static partial class Extensions
     {
 
         public static string Details(this Exception ex)
         {
+            return DetailsObject(ex).ToString();
+        }
+
+        public static ErrorInfo DetailsObject(this Exception ex)
+        {
+            var res = new ErrorInfo();
+
             try
             {
-                var sb = new StringBuilder();
+                res.Message = ex.Message;
+                res.ExceptionType = ex.GetType().ToString();
+                res.Stacktrace = ex.StackTrace.ToString();
 
-                sb.AppendLine($"exception message : [{ex.Message}]");
-                sb.AppendLine($"exception type : [{ex.GetType()}]");
-                sb.AppendLine($"stacktrace : [{ex.StackTrace.ToString()}]");
+                var sb = new StringBuilder();
 
                 Func<Exception, string> inner_detail = null;
                 inner_detail = (e) =>
@@ -82,12 +110,17 @@ namespace SearchAThing
 
                 inner_detail(ex);
 
-                return sb.ToString();
+                if (sb.Length > 0)
+                    res.InnerException = sb.ToString();
+
+                return res;
             }
             catch (Exception ex0)
             {
-                return $"exception generating ex detail : {ex0?.Message}";
+                res.Message = $"exception generating ex detail : {ex0?.Message}";
             }
+
+            return res;
         }
 
     }
