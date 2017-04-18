@@ -25,6 +25,7 @@
 
 using SearchAThing.Core;
 using System;
+using System.Collections.Generic;
 using static System.Math;
 
 namespace SearchAThing
@@ -101,6 +102,21 @@ namespace SearchAThing
         public static R Eval<T, R>(this T o, Func<T, R> fn)
         {
             return fn(o);
+        }
+
+        /// <summary>
+        /// searches on a valuetype IEnumerable and return a nullable null object if not found
+        /// </summary>        
+        public static T? FirstOrNull<T>(this IEnumerable<T> t, Func<T, bool> predicate) where T : struct
+        {
+            var en = t.GetEnumerator();
+
+            while (en.MoveNext())
+            {
+                if (predicate(en.Current)) return en.Current;
+            }
+
+            return null;
         }
 
     }
