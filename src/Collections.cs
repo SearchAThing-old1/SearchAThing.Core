@@ -53,6 +53,11 @@ namespace SearchAThing
             return new HashSet<T>(set);
         }
 
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> set, IEqualityComparer<T> cmp)
+        {
+            return new HashSet<T>(set, cmp);
+        }
+
         /// <summary>
         /// move next and retrieve current from the given enumerator
         /// </summary>        
