@@ -213,6 +213,26 @@ namespace SearchAThing
             return contains;
         }
 
+        /// <summary>
+        /// returns 1.0 if n>=0
+        /// -1 otherwise
+        /// </summary>        
+        public static double Sign(this int n)
+        {
+            if (n >= 0) return 1.0;
+            return -1.0;
+        }
+
+        /// <summary>
+        /// returns 1.0 if n>=0
+        /// -1 otherwise
+        /// </summary>        
+        public static double Sign(this double n)
+        {
+            if (n >= 0) return 1.0;
+            return -1.0;
+        }
+
     }
 
 }
