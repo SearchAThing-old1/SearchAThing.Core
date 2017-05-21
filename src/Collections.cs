@@ -70,7 +70,7 @@ namespace SearchAThing
         /// <summary>
         /// create a rotated list where lst[N-1] satisfy the given lastRule, and lst[0] satisfy firstRule        
         /// </summary>        
-        public static IEnumerable<T> RotateListUntil<T>(this IList<T> lst, Func<T, bool> lastRule, Func<T, bool> firstRule)
+        public static IEnumerable<T> RotateListUntil<T>(this IReadOnlyList<T> lst, Func<T, bool> lastRule, Func<T, bool> firstRule)
         {
             var idxFirstRule = -1;
             for (int i = 0; i < lst.Count; ++i)
@@ -109,7 +109,7 @@ namespace SearchAThing
         /// <summary>
         /// from a IList retrieve last n items
         /// </summary>        
-        public static IEnumerable<T> TakeLast<T>(this IList<T> lst, int n)
+        public static IEnumerable<T> TakeLast<T>(this IReadOnlyList<T> lst, int n)
         {
             var idx = lst.Count - n;
 
