@@ -44,6 +44,20 @@ namespace SearchAThing
             }
             return res;
         }
+        /// <summary>
+        /// seek to begin and read all of the stream to a string
+        /// </summary>        
+        public static string ReadToEnd(this Stream stream, bool auto_seek_begin = true)
+        {
+            string res = null;
+            var sr = new StreamReader(stream);
+            {
+                if (auto_seek_begin) stream.Seek(0, SeekOrigin.Begin);
+                res = sr.ReadToEnd();
+            }
+            return res;
+        }
+
 
     }
 
