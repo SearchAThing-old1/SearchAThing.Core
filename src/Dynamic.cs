@@ -57,7 +57,7 @@ namespace SearchAThing
         /// </summary>        
         public static string GetString(dynamic value, string valueIfNull = "")
         {
-            if (value == null) return valueIfNull;
+            if (value == null || value == DBNull.Value) return valueIfNull;
 
             return (string)value;
         }
@@ -67,7 +67,7 @@ namespace SearchAThing
         /// </summary>        
         public static bool GetBool(dynamic value, bool valueIfNull = false)
         {
-            if (value == null) return valueIfNull;
+            if (value == null || value == DBNull.Value) return valueIfNull;
 
             return (bool)value;
         }
@@ -77,7 +77,17 @@ namespace SearchAThing
         /// </summary>        
         public static double GetDouble(dynamic value, double valueIfNull = 0)
         {
-            if (value == null) return valueIfNull;
+            if (value == null || value == DBNull.Value) return valueIfNull;
+
+            return (double)value;
+        }
+
+        /// <summary>
+        /// safe retrieve dynamic double type
+        /// </summary>        
+        public static double? GetNullableDouble(dynamic value)
+        {
+            if (value == null || value == DBNull.Value) return new double?();
 
             return (double)value;
         }
@@ -87,7 +97,7 @@ namespace SearchAThing
         /// </summary>        
         public static long GetLong(dynamic value, long valueIfNull = 0L)
         {
-            if (value == null) return valueIfNull;
+            if (value == null || value == DBNull.Value) return valueIfNull;
 
             return (long)value;
         }
@@ -97,7 +107,7 @@ namespace SearchAThing
         /// </summary>        
         public static int GetInt(dynamic value, int valueIfNull = 0)
         {
-            if (value == null) return valueIfNull;
+            if (value == null || value == DBNull.Value) return valueIfNull;
 
             return (int)value;
         }
