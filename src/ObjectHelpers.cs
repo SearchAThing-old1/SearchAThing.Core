@@ -119,6 +119,25 @@ namespace SearchAThing
             return null;
         }
 
+        /// <summary>
+        /// sweep given list from given start_idx stepping with given step
+        /// until bounds not exceeded or end function not reached
+        /// </summary>        
+        public static IEnumerable<T> Sweep<T>(this IReadOnlyList<T> lst, int start_idx, int step, Func<int, T, bool> end) where T : class
+        {
+            var idx = start_idx;
+            while (true)
+            {
+                if (idx < 0 || idx >= lst.Count) yield break;
+
+                if (end(idx, lst[idx])) yield break;
+
+                yield return lst[idx];
+
+                idx += step;
+            }
+        }
+
     }
 
 }
