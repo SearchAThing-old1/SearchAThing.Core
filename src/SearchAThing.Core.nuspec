@@ -24,5 +24,10 @@ xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 		<copyright>Copyright ©2017 Lorenzo Delana</copyright>
 		
 		<tags>core c#</tags>		
-    </metadata>  
+    </metadata>
+    	
+    <files>
+		<file src="src/bin/Release/SearchAThing.Core.dll" target="lib/net46" />
+		<file src="src/bin/Release/SearchAThing.Core.xml" target="lib/net46" />
+    </files>
 </package>
