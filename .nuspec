@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package 
+xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>    
+		<id>SearchAThing.Core</id>
+		
+		<version>1.0.0</version>
+		
+		<authors>Lorenzo Delana</authors>
+		
+		<owners>Lorenzo Delana</owners>
+		
+		<licenseUrl>https://github.com/devel0/SearchAThing.Core/blob/master/LICENSE.md</licenseUrl>
+		<projectUrl>https://github.com/devel0/SearchAThing.Core</projectUrl>    
+		
+		<iconUrl>http://github.com/contoso/UsefulStuff/nuget_icon.png</iconUrl>
+		
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		
+		<releaseNotes>Initial myget package</releaseNotes>
+
+		<description>Core functions for C# programmers</description>
+		
+		<copyright>Copyright ©2017 Lorenzo Delana</copyright>
+		
+		<tags>core c#</tags>		
+    </metadata>
+    
+	<!--
+    <files>
+		<file src="src/bin/Release/SearchAThing.Core.dll" target="" />
+    </files>-->
+</package>
