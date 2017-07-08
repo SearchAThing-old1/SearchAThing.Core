@@ -1,4 +1,4 @@
- # SearchAThing.Core
+# SearchAThing.Core
 
 Common core libraries.
 
