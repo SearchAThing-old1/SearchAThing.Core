@@ -26,8 +26,4 @@ xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <tags>core c#</tags>
   </metadata>
 
-  <files>
-    <file src="bin/Release/SearchAThing.Core.dll" target="lib/net46" />
-    <file src="bin/Release/SearchAThing.Core.xml" target="lib/net46" />
-  </files>
 </package>
