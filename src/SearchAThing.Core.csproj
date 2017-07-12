@@ -1,105 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8162A30E-A46D-4A78-BA12-1F376AC6F1B4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SearchAThing.Core</RootNamespace>
-    <AssemblyName>SearchAThing.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>net462;net47</TargetFrameworks>
+    <Product>Core utilities for C# SearchAThing libraries</Product>
+    <Company />
+    <Authors>Lorenzo Delana</Authors>
+    <Description>Common core libraries.</Description>
+    <Copyright>Copyright (c) 2015-2016 Lorenzo Delana, https://searchathing.com/</Copyright>
+    <PackageLicenseUrl>https://github.com/devel0/SearchAThing.Core/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/devel0/SearchAThing.Core</PackageProjectUrl>
+    <RepositoryUrl />
+    <PackageTags>c# core</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\SearchAThing.Core.xml</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="EntityFramework" Version="6.1.3" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.4.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Npgsql" Version="3.2.4.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CircularEnumerator.cs" />
-    <Compile Include="CircularList.cs" />
-    <Compile Include="Collections.cs" />
-    <Compile Include="EventOperation.cs" />
-    <Compile Include="Exception.cs" />
-    <Compile Include="IEventOperation.cs" />
-    <Compile Include="Fluent.cs" />
-    <Compile Include="LinqExpr.cs" />
-    <Compile Include="Progress.cs" />
-    <Compile Include="Markdown.cs" />
-    <Compile Include="ObjectDiff.cs" />
-    <Compile Include="Dynamic.cs" />
-    <Compile Include="JsonHelper.cs" />
-    <Compile Include="Assembly.cs" />
-    <Compile Include="Postgresql.cs" />
-    <Compile Include="ObjectHelpers.cs" />
-    <Compile Include="Number.cs" />
-    <Compile Include="IScopedChild.cs" />
-    <Compile Include="ScopedChildren.cs" />
-    <Compile Include="Path.cs" />
-    <Compile Include="ProcessTask.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializer.cs" />
-    <Compile Include="Stream.cs" />
-    <Compile Include="DateTime.cs" />
-    <Compile Include="StringID.cs" />
-    <Compile Include="String.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="EntityFramework">
-      <Version>6.1.3</Version>
-    </PackageReference>
-    <PackageReference Include="MongoDB.Bson">
-      <Version>2.4.4</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="Npgsql">
-      <Version>3.1.9</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.3.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
