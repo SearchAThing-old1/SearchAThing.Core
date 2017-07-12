@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net47</TargetFrameworks>
+    <TargetFrameworks>net461;net462</TargetFrameworks>
     <Product>Core utilities for C# SearchAThing libraries</Product>
     <Company />
     <Authors>Lorenzo Delana</Authors>
