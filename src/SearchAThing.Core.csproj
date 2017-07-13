@@ -6,7 +6,7 @@
     <Company />
     <Authors>Lorenzo Delana</Authors>
     <Description>Common core libraries.</Description>
-    <Copyright>Copyright (c) 2015-2016 Lorenzo Delana, https://searchathing.com/</Copyright>
+    <Copyright>Copyright (c) 2015-2017 Lorenzo Delana, https://searchathing.com/</Copyright>
     <PackageLicenseUrl>https://github.com/devel0/SearchAThing.Core/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/devel0/SearchAThing.Core</PackageProjectUrl>
     <RepositoryUrl />
