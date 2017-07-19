@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;net462</TargetFrameworks>
+    <TargetFrameworks>net46;net461;net462</TargetFrameworks>
     <Product>Core utilities for C# SearchAThing libraries</Product>
     <Company />
     <Authors>Lorenzo Delana</Authors>
@@ -12,6 +12,10 @@
     <RepositoryUrl />
     <PackageTags>c# core</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
+    <DocumentationFile>bin\Release\net461\SearchAThing.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
