@@ -18,6 +18,10 @@
     <DocumentationFile>bin\Release\net461\SearchAThing.Core.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>bin\Release\net46\SearchAThing.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.1.3" />
     <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
