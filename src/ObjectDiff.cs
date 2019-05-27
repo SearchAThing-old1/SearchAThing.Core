@@ -29,9 +29,9 @@ using System.Collections.Generic;
 using static System.Math;
 using System.Linq;
 using MongoDB.Bson.Serialization.Attributes;
-using SearchAThing.Core;
+using OLDSearchAThing.Core;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     namespace Core

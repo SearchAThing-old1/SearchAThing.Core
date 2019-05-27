@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Extensions

@@ -25,7 +25,7 @@
 
 using System;
 
-namespace SearchAThing.Core
+namespace OLDSearchAThing.Core
 {
 
     /// <summary>

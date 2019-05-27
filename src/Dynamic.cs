@@ -32,7 +32,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Thirdy;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Dynamic

@@ -27,7 +27,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SearchAThing.Core
+namespace OLDSearchAThing.Core
 {
 
     public class CircularList<D>

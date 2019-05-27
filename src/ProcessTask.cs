@@ -32,7 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Math;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     namespace Core

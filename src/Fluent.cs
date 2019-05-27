@@ -28,7 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static System.Math;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Extensions

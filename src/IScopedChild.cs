@@ -27,7 +27,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     namespace Core

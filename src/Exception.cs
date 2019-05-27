@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Text;
 using static System.Math;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public class ErrorInfo

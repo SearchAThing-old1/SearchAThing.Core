@@ -23,12 +23,12 @@
 */
 #endregion
 
-using SearchAThing.Core;
+using OLDSearchAThing.Core;
 using System;
 using System.Collections.Generic;
 using static System.Math;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     namespace Core

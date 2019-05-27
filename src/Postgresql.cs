@@ -24,7 +24,7 @@
 #endregion
 
 using Npgsql;
-using SearchAThing.Core;
+using OLDSearchAThing.Core;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -35,7 +35,7 @@ using System.Linq;
 using System.Collections;
 using System.Threading;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Dynamic

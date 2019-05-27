@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SearchAThing.Core
+namespace OLDSearchAThing.Core
 {
 
     // Ref. doc: https://searchathing.com/?p=627

@@ -29,7 +29,7 @@ using System.Collections.ObjectModel;
 using static System.Math;
 using System.Linq;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Extensions

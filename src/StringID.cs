@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
 
-namespace SearchAThing.Core
+namespace OLDSearchAThing.Core
 {
 
     /// <summary>

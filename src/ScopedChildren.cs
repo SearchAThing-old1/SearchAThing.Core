@@ -26,7 +26,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     namespace Core

@@ -25,7 +25,7 @@
 
 using System;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Extensions

@@ -23,12 +23,12 @@
 */
 #endregion
 
-using SearchAThing.Core;
+using OLDSearchAThing.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
     
     namespace Core
@@ -38,7 +38,7 @@ namespace SearchAThing
         {
 
             IEnumerator<D> enumerator;
-
+            
             public CircularEnumerator(IEnumerable<D> en)
             {
                 enumerator = en.GetEnumerator();

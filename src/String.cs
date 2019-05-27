@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static System.Math;
-using SearchAThing;
+using OLDSearchAThing;
 using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -35,7 +35,7 @@ using System.Globalization;
 using static System.FormattableString;
 using Newtonsoft.Json;
 
-namespace SearchAThing
+namespace OLDSearchAThing
 {
 
     public static partial class Extensions
